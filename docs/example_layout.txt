@@ -1,0 +1,110 @@
+groups
+    project-managers
+        metadata ? submission_batches?
+            README.txt (describes purpose and how to add new versions)
+            sub -> /groups/submissions/metadata (top-level linkage)
+            v1
+                README.txt (describes layout of current version and previous)
+                meta.yaml
+                    version: 1.4
+                topmed
+                    phase3
+                        cardia
+                            01 (batch group)
+                                17a (b for second attempt, etc.)
+                                    sub -> ../../.../sub/.../17a
+                                    CARDIA_batch17a.xlsx
+                                    CARDIA_batch17a_globus.tsv
+                                    meta.yaml
+                                        input: CARDIA_batch17a_globus.tsv
+                                        external: (may leave out)
+                                        batch_date: 2017-12-05
+                                        file_formats: (usually just one)
+                                            - CRAM
+                                            - VCF
+                                        attempt: a
+                                        funding_code: TOPMED_phase3_123456
+                                        project_code: proj-dm0019
+                                    README.txt (normally missing)
+    submissions
+        metadata ?
+            v1
+                topmed
+                    phase3
+                        cardia
+                            01
+                                17a (to store state, checksums, and validations)
+                                    md5
+                                        sample1.hgv.cram.md5
+                                        sample2.hgv.cram.md5
+                                        ...
+                                    validation
+                                        sample1.hgv.cram.err
+                                        sample1.hgv.cram.job
+                                        sample1.hgv.cram.out
+                                        sample1.hgv.cram.time
+                                        ...
+                                    state
+                                        00.yaml
+                                            state_id: 0
+                                            steps_completed: 0
+                                            state:
+                                                copy: initial
+                                                md5: initial
+                                                validation: initial
+                                        01.yaml
+                                            state_id: 1
+                                            steps_completed: 0
+                                            state:
+                                                copy: running
+                                                md5: running
+                                                validation: running
+                                        02.yaml
+                                            state_id: 2
+                                            steps_completed: 1
+                                            state:
+                                                copy: running
+                                                md5: finished
+                                                validation: running
+                                            errors:
+                                                md5: 0
+                                        03.yaml
+                                            state_id: 3
+                                            steps_completed: 2
+                                            state:
+                                                copy: finished
+                                                md5: finished
+                                                validation: running
+                                            errors:
+                                                copy: 0
+                                                md5: 0
+                                        04.yaml
+                                            state_id: 4
+                                            steps_completed: 3
+                                            state:
+                                                copy: finished
+                                                md5: finished
+                                                validation: finished
+                                            errors:
+                                                copy: 0
+                                                md5: 0
+                                                validation: 2
+                                            bad_files:
+                                                - sample7.hgv.cram
+                                                - sample8.hgv.cram
+                                        05.yaml
+                                            state_id: 5
+                                            steps_completed: 4
+                                            state:
+                                                copy: finished
+                                                manifest: finished
+                                                md5: finished
+                                                validation: finished
+                                            errors:
+                                                copy: 0
+                                                md5: 0
+                                                validation: 2
+                                            bad_files:
+                                                - sample7.hgv.cram
+                                                - sample8.hgv.cram
+                                        current.yaml -> 05.yaml
