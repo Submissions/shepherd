@@ -1,3 +1,9 @@
+Customer:
+
+    submit_batch topmed phase3 cardia 17a TOPMed_CARDIA_batch17a.xlsx
+    # Outputs:
+    # Summary stats, name of output file, blank line, contents of meta.yaml
+
 At start:
 
     submission_kickoff /groups/project-managers/metadata/v1/topmed/phase3/cardia/01/17a
