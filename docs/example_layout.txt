@@ -16,14 +16,17 @@ groups
                                     CARDIA_batch17a.xlsx
                                     CARDIA_batch17a_globus.tsv
                                     meta.yaml
+                                        batch_title: TOPMed_CARDIA_batch17a
                                         input: CARDIA_batch17a_globus.tsv
                                         external: (may leave out)
                                         batch_date: 2017-12-05
                                         file_formats: (usually just one)
                                             - CRAM
                                             - VCF
+                                        num_records: 90
+                                        file_sizes: 21-29G
                                         attempt: a
-                                        funding_code: TOPMED_phase3_123456
+                                        funding_source: TOPMED_phase3_123456
                                         project_code: proj-dm0019
                                     README.txt (normally missing)
     submissions
