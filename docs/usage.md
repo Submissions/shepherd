@@ -1,16 +1,33 @@
 Customer:
 
-    submit_batch topmed phase3 cardia 17a TOPMed_CARDIA_batch17a.xlsx
-    # Outputs:
-    # Summary stats, name of output file, blank line, contents of meta.yaml
-
-At start:
-
-    submission_kickoff /groups/project-managers/metadata/v1/topmed/phase3/cardia/01/17a
+    send_batch topmed phase3 cardia 17a CARDIA_batch17a.xlsx CARDIA_batch17a_globus.xlsx
 
 Effects:
 
-* Reads: /groups/project-managers/metadata/v1/topmed/phase3/cardia/01/17a/meta.yaml3
+* Reads:
+  - CARDIA_batch17a_globus.xlsx
+  - /groups/project-managers/metadata/v1/topmed/phase3/cardia/01/defaults.yaml
+* Fetches sizes of all CRAM files.
+* Creates:
+  - /groups/project-managers/metadata/v1/topmed/phase3/cardia/01/17a/
+    - sub -> ../../../../../../sub/v1/topmed/phase3/cardia/01/17a
+    - meta.yaml
+* Copies the two input files into the new directory ("17a" in this case)
+* Outputs:
+  - summary stats
+  - WORKLIST for {output file}
+  - blank line
+  - absolute path of new directory (17a in this case)
+  - blank line
+  - contents of meta.yaml
+
+Submissions:
+
+    accept_batch /groups/project-managers/metadata/v1/topmed/phase3/cardia/01/17a
+
+Effects:
+
+* Reads: /groups/project-managers/metadata/v1/topmed/phase3/cardia/01/17a/meta.yaml
 * Asserts just CRAM for file_formats
 * Creates:
     - /groups/submissions/metadata/v1/topmed/phase3/cardia/01/17a/{md5,validation}
@@ -28,4 +45,4 @@ Run scripts as normal, except that input is now TSV.
 As things succeed, run:
 
     cd $SOME_WORKING_DIR
-    submission_update
+    update_batch
