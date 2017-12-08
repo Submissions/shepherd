@@ -13,3 +13,5 @@ batch_input_file = sys.argv[6]
 globus_input_file = sys.argv[7]
 
 subprocess.Popen(['mkdir', '-p','project_name/phase/subproject_name/batch_group/batch_name'])
+
+subprocess.Popen(['ln', '-s', '../sub'])
