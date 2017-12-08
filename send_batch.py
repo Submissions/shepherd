@@ -12,6 +12,13 @@ batch_name = sys.argv[5]
 batch_input_file = sys.argv[6]
 globus_input_file = sys.argv[7]
 
-subprocess.Popen(['mkdir', '-p','project_name/phase/subproject_name/batch_group/batch_name'])
+with open(batch_input_file) as f:
+    next(f)
+    for raw_line in f:
+        line = raw_line.rstrip().split("\t")
+        num_records = sum(1 for l in f)
+        
 
-subprocess.Popen(['ln', '-s', '../sub'])
+#subprocess.Popen(['mkdir', '-p','project_name/phase/subproject_name/batch_group/batch_name'])
+
+#subprocess.Popen(['ln', '-s', '../sub'])
