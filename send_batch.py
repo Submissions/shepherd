@@ -12,10 +12,21 @@ batch_name = sys.argv[5]
 batch_input_file = sys.argv[6]
 globus_input_file = sys.argv[7]
 
+
+sizes = []
+
 with open(batch_input_file) as f:
     next(f)
     for raw_line in f:
         line = raw_line.rstrip().split("\t")
         cram_paths = line[7]
-        sizes = []
-        sizes.append(os.path.getsize(cram_paths)
+        s = (os.path.getsize(cram_paths))
+        sizes.append(s)
+        min_size = min(sizes)
+        max_size = max(sizes)
+        num_records = len(sizes)
+print(min_size, max_size, num_records) #TODO: convert to GB?
+
+os.makedirs(project_name/phase) #not working??
+
+subprocess.Popen(['ln', '-s', '../sub'])
