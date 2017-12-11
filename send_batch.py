@@ -17,10 +17,5 @@ with open(batch_input_file) as f:
     for raw_line in f:
         line = raw_line.rstrip().split("\t")
         cram_paths = line[7]
-        subprocess.Popen(['ls', '-lh', cram_paths])
-#        num_records = sum(1 for l in f)
-#        print(num_records)
-
-#subprocess.Popen(['mkdir', '-p','project_name/phase/subproject_name/batch_group/batch_name'])
-
-#subprocess.Popen(['ln', '-s', '../sub'])
+        sizes = []
+        sizes.append(os.path.getsize(cram_paths)
