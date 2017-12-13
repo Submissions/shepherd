@@ -23,9 +23,11 @@ with open(batch_input_file) as f:
         s = (os.path.getsize(cram_paths))
         sizes.append(s)
         min_size = min(sizes)
+        gb_min_size = round(min_size/2**30)
         max_size = max(sizes)
+        gb_max_size = round(max_size / 2**30)
         num_records = len(sizes)
-print(min_size, max_size, num_records) #TODO: convert to GB?
+    print(gb_min_size, gb_max_size, num_records)
 
 pr = Path(project_name)
 ph = phase
@@ -34,5 +36,5 @@ bg = batch_group
 bn = batch_name
 
 batch_path = Path(pr/ph/sn/bg/bn)
-
 batch_path.mkdir(exist_ok=True, parents=True)
+
