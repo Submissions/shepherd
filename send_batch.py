@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3.6
 
 import os
 import sys
-import subprocess
+from pathlib import Path
 
 project_name = sys.argv[1]
 phase = sys.argv[2]
@@ -27,6 +27,12 @@ with open(batch_input_file) as f:
         num_records = len(sizes)
 print(min_size, max_size, num_records) #TODO: convert to GB?
 
-os.makedirs(project_name/phase) #not working??
+pr = Path(project_name)
+ph = phase
+sn = subproject_name
+bg = batch_group
+bn = batch_name
 
-subprocess.Popen(['ln', '-s', '../sub'])
+batch_path = Path(pr/ph/sn/bg/bn)
+
+batch_path.mkdir(exist_ok=True, parents=True)
