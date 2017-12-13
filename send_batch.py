@@ -38,3 +38,7 @@ bn = batch_name
 batch_path = Path(pr/ph/sn/bg/bn)
 batch_path.mkdir(exist_ok=True, parents=True)
 
+sub_path = Path('sub')
+
+sub_path.symlink_to('../sub')
+
