@@ -18,35 +18,58 @@ base_dir = base_dirr.absolute()
 print (base_dir)
 meta_base = Path('/groups/submissions/metadata/v1/topmed')
 sub_base = Path('/stornext/snfs1/submissions/topmed')
+meta = "meta.yaml"
 
+def write_yaml(path):
+    "This bad boy writes yaml files"
+    file_create= path / meta
+    with file_create.open("w", encoding ="utf-8") as f:
+        f.write("yaml /n")
+        return
 
-
-
-
-
+    
 with open(input_file) as file:
     input=yaml.load(file)
 
-test_path = (input['Resources']['MyEC2Instance']['Type'])
-meta_test = (input['Resources']['MyEC2Instance']['Properties']['KeyName'])
+test_path = input['Resources']['MyEC2Instance']['Type']
+meta_test = input['Resources']['MyEC2Instance']['Properties']['KeyName']
 
 
 #below makes directory will change "test" for the variable 
-
+#below makes files in path I am writing
 test_dir = base_dir / test_path
 if test_dir.exists():
-    print ("exist")
+    
+    print (base_dir)
+    print ("base_dir above")
+    
+    write_yaml(test_dir)
     
 else:
     test_dir.mkdir()
+    write_yaml(test_dir)
 
 
-
-
-print (meta_base)
 meta_dir = meta_base / meta_test
+if meta_dir.exists():
+    print ("meta exist")
+
+else:
+    meta_dir.mkdir()
+
 md5 = sub_base /"md5-batches"/meta_test
 valid = sub_base /"validation-batches"/meta_test
-meta_dir.mkdir()
-md5.mkdir()
-valid.mkdir()
+if md5.exists():
+    print ("md5 exist")
+
+else:
+    md5.mkdir()
+
+if valid.exists():
+    print ("valid exist")
+
+else:
+    valid.mkdir()
+
+
+
