@@ -3,6 +3,7 @@
 import os
 import sys
 from pathlib import Path
+import yaml
 
 project_name = sys.argv[1]
 phase = sys.argv[2]
@@ -26,8 +27,9 @@ with open(batch_input_file) as f:
         gb_min_size = round(min_size/2**30)
         max_size = max(sizes)
         gb_max_size = round(max_size / 2**30)
+        size_range = str(gb_min_size) + '-' + str(gb_max_size)
         num_records = len(sizes)
-    print(gb_min_size, gb_max_size, num_records)
+    print(size_range, num_records)
 
 pr = Path(project_name)
 ph = phase
@@ -40,3 +42,8 @@ batch_path.mkdir(exist_ok=True, parents=True)
 
 sub_path = Path('sub')
 sub_path.symlink_to('../sub')
+
+d = dict(input_file=batch_input_file, num_records=num_records, file_sizes=size_range)
+
+with open('meta.yaml','w') as fout:
+    yaml.dump(d, fout, default_flow_style=False)
