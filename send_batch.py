@@ -13,14 +13,13 @@ batch_name = sys.argv[5]
 batch_input_file = sys.argv[6]
 globus_input_file = sys.argv[7]
 
-
 sizes = []
 
 with open(batch_input_file) as f:
     next(f)
     for raw_line in f:
         line = raw_line.rstrip().split("\t")
-        cram_paths = line[7]
+        cram_paths = line[8]
         s = (os.path.getsize(cram_paths))
         sizes.append(s)
         min_size = min(sizes)
@@ -29,21 +28,27 @@ with open(batch_input_file) as f:
         gb_max_size = round(max_size / 2**30)
         size_range = str(gb_min_size) + '-' + str(gb_max_size)
         num_records = len(sizes)
-    print(size_range, num_records)
 
-pr = Path(project_name)
-ph = phase
-sn = subproject_name
-bg = batch_group
-bn = batch_name
+with open("defaults.yaml") as f:
+    for raw_line in f:
+        line = raw_line.rstrip()
+        print(line)
 
-batch_path = Path(pr/ph/sn/bg/bn)
-batch_path.mkdir(exist_ok=True, parents=True)
+# pr = Path(project_name)
+# ph = phase
+# sn = subproject_name
+# bg = batch_group
+# bn = batch_name
 
-sub_path = Path('sub')
-sub_path.symlink_to('../sub')
+# batch_path = (pr/ph/sn/bg/bn)
+# batch_path.mkdir(exist_ok=True, parents=True)
 
-d = dict(input_file=batch_input_file, num_records=num_records, file_sizes=size_range)
+# sub_path = Path('sub')
+# sub_path.symlink_to('../sub')
 
-with open('meta.yaml','w') as fout:
-    yaml.dump(d, fout, default_flow_style=False)
+# d = dict(input_file=batch_input_file,
+#          num_records=num_records,
+#          file_sizes=size_range)
+
+# with open('meta.yaml','w') as fout:
+#     yaml.dump(d, fout, default_flow_style=False)
