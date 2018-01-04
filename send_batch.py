@@ -14,6 +14,7 @@ batch_input_file = sys.argv[6]
 globus_input_file = sys.argv[7]
 
 sizes = []
+lines = []
 
 with open(batch_input_file) as f:
     next(f)
@@ -31,24 +32,28 @@ with open(batch_input_file) as f:
 
 with open("defaults.yaml") as f:
     for raw_line in f:
-        line = raw_line.rstrip()
-        print(line)
+        line = raw_line.rstrip().split()
+        lines.append(line)
+    funding = (lines[0][1])
+    project_code = (lines[1][1])
 
-# pr = Path(project_name)
-# ph = phase
-# sn = subproject_name
-# bg = batch_group
-# bn = batch_name
+pr = Path(project_name)
+ph = phase
+sn = subproject_name
+bg = batch_group
+bn = batch_name
 
-# batch_path = (pr/ph/sn/bg/bn)
-# batch_path.mkdir(exist_ok=True, parents=True)
+batch_path = (pr/ph/sn/bg/bn)
+batch_path.mkdir(exist_ok=True, parents=True)
 
-# sub_path = Path('sub')
-# sub_path.symlink_to('../sub')
+sub_path = Path('sub')
+sub_path.symlink_to('../sub')
 
-# d = dict(input_file=batch_input_file,
-#          num_records=num_records,
-#          file_sizes=size_range)
+d = dict(input_file=batch_input_file,
+         num_records=num_records,
+         file_sizes=size_range,
+         funding_source = funding,
+         project_code = project_code)
 
-# with open('meta.yaml','w') as fout:
-#     yaml.dump(d, fout, default_flow_style=False)
+with open('meta.yaml','w') as fout:
+    yaml.dump(d, fout, default_flow_style=False)
