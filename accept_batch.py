@@ -6,15 +6,16 @@ import sys
 import yaml
 """
 Arguement will be path where meta file is found
-
+need to run in prod, since will call aspera
 /groups/submissions/metadata/v1/topmed/phase3/cardia/01/17a/{md5,validation}
 /groups/submissions/metadata/v1/topmed/phase3/cardia/01/17a/state/{00,current}.yaml
 /aspera/share/globusupload/submissions/cardia/CARDIA_batch17a/meta.yaml
 /stornext/submissions/topmed/md5-batches/CARDIA_batch17a/meta.yaml
 /stornext/submissions/topmed/validation-batches/CARDIA_batch17a/meta.yaml
 """
-sub_base = Path('/stornext/snfs1/submissions/topmed')
-asp_base = Path(' christis@hgsc-aspera1.hgsc.bcm.edu:/share/share/globusupload/submissions')
+sub_base = Path('/stornext/snfs1/submissions/topmed/test')
+#asp_base = Path('/aspera/share/share/globusupload/submissions/test') #Might need to run in prod
+asp_base = Path('aspera/share/globusupload/submissions')
 g_base = Path('/groups/submissions/metadata/v1')
 base_dirr =Path('')
 base_dir = base_dirr.absolute()
@@ -48,15 +49,22 @@ def write_yaml(path):
 def check_or_make(path):
     if path.exists():
         print ("%s exist" % (path)) 
+        write_yaml(path)
     else:
-        path.mkdir()
-
+        path.mkdir(parents=True)
+        write_yaml(path)
 def make_paths(input_p):
     md5_g = Path(input_p,"md5")
     check_or_make(md5_g)
     val_g = Path(input_p,"validation")
     check_or_make(val_g)
-    
+    #asp = Path(asp_base,sub_proj,batch_name)
+    #check_or_make(asp)
+    md5_s = Path(sub_base,"md5-batches",batch_name)
+    val_s = Path(sub_base,"validation-batches",batch_name)
+    check_or_make(md5_s)
+    check_or_make(val_s)
+
 
 batch_name = meta.batch_title[7:]
 batch_num = meta.batch_title[-3:-1]
@@ -70,8 +78,8 @@ make_paths(input_path)
 dest_path = Path(g_base, *input_path.parts[-5:])
 
 
-dest_path.mkdir(parents=True, exist_ok=True)
-write_yaml(dest_path)
+#dest_path.mkdir(parents=True, exist_ok=True)
+#write_yaml(dest_path)
 
 
 
