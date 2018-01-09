@@ -21,6 +21,7 @@ meta_path = meta_hits[0]
 meta_doc = yaml.load(meta_path.read_text())
 dest_path = Path(g_base, *input_path.parts[-5:])
 
+logging.basicConfig(level=logging.INFO)
 class Generic:
     pass
 meta = Generic()
@@ -49,7 +50,7 @@ def write_yaml(path):
 
 def check_or_make(path):
     if path.exists():
-        print ("%s exist" % (path)) 
+        logging.info("%s exist" % (path)) 
         write_yaml(path)
     else:
         path.mkdir(parents=True)
@@ -74,6 +75,7 @@ project_code = meta.project_code
 samp_num = meta.num_records
 
 if is_cram(meta) == True:
+    logging.info("This is a cram")
     make_paths(input_path)
 else:
-    print ("Not a Cram")
+    logging.error("!!Not a Cram!!!")
