@@ -1,3 +1,6 @@
+from os import path
+
+import jinja2
 from pytest import fixture
 import yaml
 
@@ -33,4 +36,16 @@ class SendBatchFixture:
         config = dict(pm_root=str(self.pm_root), sub_root=str(self.sub_root))
         self.config_file.write_text(
             yaml.dump(config, default_flow_style=False), 'ascii'
+        )
+        generate_worklist(self.root_dir)
+
+
+def generate_worklist(dest_dir):
+    with open('tests/resources/TMSOL_batch24am_cram.tsv') as fin:
+        template_str = fin.read()
+    template = jinja2.Template(template_str)
+    dest_path = dest_dir.join('TMSOL_batch24a_cram.tsv')
+    with dest_path.open('w', 'ascii') as fout:
+        fout.write(
+            template.render(crams=path.abspath('tests/resources/crams'))
         )
