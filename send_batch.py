@@ -31,11 +31,9 @@ with open(batch_input_file) as f:
         num_records = len(sizes)
 
 with open("defaults.yaml") as f:
-    for raw_line in f:
-        line = raw_line.rstrip().split()
-        lines.append(line)
-    funding = (lines[0][1])
-    project_code = (lines[1][1])
+    d = yaml.load(f)
+funding = d['funding_source']
+project_code = d['project_code']
 
 pr = Path(project_name)
 ph = phase
