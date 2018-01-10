@@ -1,11 +1,11 @@
 Customer:
 
-    send_batch topmed phase3 cardia 17a CARDIA_batch17a.xlsx CARDIA_batch17a_globus.xlsx
+    send_batch topmed phase3 cardia 17a CARDIA_batch17a.tsv CARDIA_batch17a_globus.tsv
 
 Effects:
 
 * Reads:
-  - CARDIA_batch17a_globus.xlsx
+  - CARDIA_batch17a_globus.tsv
   - /groups/project-managers/tech/metadata/v1/topmed/phase3/cardia/01/defaults.yaml
 * Fetches sizes of all CRAM files.
 * Creates:
