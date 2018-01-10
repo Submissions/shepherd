@@ -6,10 +6,10 @@ Effects:
 
 * Reads:
   - CARDIA_batch17a_globus.xlsx
-  - /groups/project-managers/metadata/v1/topmed/phase3/cardia/01/defaults.yaml
+  - /groups/project-managers/tech/metadata/v1/topmed/phase3/cardia/01/defaults.yaml
 * Fetches sizes of all CRAM files.
 * Creates:
-  - /groups/project-managers/metadata/v1/topmed/phase3/cardia/01/17a/
+  - /groups/project-managers/tech/metadata/v1/topmed/phase3/cardia/01/17a/
     - sub -> ../../../../../../sub/v1/topmed/phase3/cardia/01/17a
     - meta.yaml
 * Copies the two input files into the new directory ("17a" in this case)
@@ -23,11 +23,11 @@ Effects:
 
 Submissions:
 
-    accept_batch /groups/project-managers/metadata/v1/topmed/phase3/cardia/01/17a
+    accept_batch /groups/project-managers/tech/metadata/v1/topmed/phase3/cardia/01/17a
 
 Effects:
 
-* Reads: /groups/project-managers/metadata/v1/topmed/phase3/cardia/01/17a/meta.yaml
+* Reads: /groups/project-managers/tech/metadata/v1/topmed/phase3/cardia/01/17a/meta.yaml
 * Asserts just CRAM for file_formats
 * Creates:
     - /groups/submissions/metadata/v1/topmed/phase3/cardia/01/17a/{md5,validation}

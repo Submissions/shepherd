@@ -1,37 +1,38 @@
 groups
     project-managers
-        metadata ? submission_batches?
-            README.txt (describes purpose and how to add new versions)
-            sub -> /groups/submissions/metadata (top-level linkage)
-            v1
-                README.txt (describes layout of current version and previous)
-                meta.yaml
-                    version: 1.4
-                topmed
-                    phase3
-                        cardia
-                            01 (batch group)
-                                defaults.yaml
-                                    funding_source: TOPMED_phase3_123456
-                                    project_code: proj-dm0019
-                                17a (b for second attempt, etc.)
-                                    sub -> ../../.../sub/.../17a
-                                    CARDIA_batch17a.xlsx
-                                    CARDIA_batch17a_globus.xlsx
-                                    meta.yaml
-                                        batch_title: TOPMed_CARDIA_batch17a
-                                        input: CARDIA_batch17a_globus.xlsx
-                                        external: (may leave out)
-                                        batch_date: 2017-12-05
-                                        file_formats: (usually just one)
-                                            - CRAM
-                                            - VCF
-                                        num_records: 90
-                                        file_sizes: 21-29G
-                                        attempt: a
+        tech
+            metadata ? submission_batches?
+                README.txt (describes purpose and how to add new versions)
+                sub -> /groups/submissions/metadata (top-level linkage)
+                v1
+                    README.txt (describes layout of current version and previous)
+                    meta.yaml
+                        version: 1.4
+                    topmed
+                        phase3
+                            cardia
+                                01 (batch group)
+                                    defaults.yaml
                                         funding_source: TOPMED_phase3_123456
                                         project_code: proj-dm0019
-                                    README.txt (normally missing)
+                                    17a (b for second attempt, etc.)
+                                        sub -> ../../.../sub/.../17a
+                                        CARDIA_batch17a.xlsx
+                                        CARDIA_batch17a_globus.xlsx
+                                        meta.yaml
+                                            batch_title: TOPMed_CARDIA_batch17a
+                                            input: CARDIA_batch17a_globus.xlsx
+                                            external: (may leave out)
+                                            batch_date: 2017-12-05
+                                            file_formats: (usually just one)
+                                                - CRAM
+                                                - VCF
+                                            num_records: 90
+                                            file_sizes: 21-29G
+                                            attempt: a
+                                            funding_source: TOPMED_phase3_123456
+                                            project_code: proj-dm0019
+                                        README.txt (normally missing)
     submissions
         metadata ?
             v1
