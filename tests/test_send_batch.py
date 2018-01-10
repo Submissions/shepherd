@@ -1,11 +1,13 @@
 from os import path
+from subprocess import run, DEVNULL, PIPE
+from sys import executable, stdout, stderr
 
 import jinja2
 from pytest import fixture
 import yaml
 
 
-def test_a(send_batch_fixture):
+def test_fixture(send_batch_fixture):
     for k in sorted(vars(send_batch_fixture)):
         print(k, getattr(send_batch_fixture, k))
     with open(send_batch_fixture.root_dir.join('config.yaml')) as fin:
@@ -15,11 +17,18 @@ def test_a(send_batch_fixture):
         print(k, config[k])
     assert 'pm_root' in config
     assert 'sub_root' in config
-    assert 0
 
 
-def test_b(send_batch_fixture):
-    pass
+def test_can_run_send_batch(send_batch_fixture):
+    args = [executable,
+            'send_batch.py',
+            'topmed', '3', 'tmsol', '01', '24a',
+            'tests/resources/TMSOL_batch24am.tsv',
+            'local/pytest-tmp/pytest-hale/TMSOL_batch24a_cram.tsv']
+    cp = run(args, stdin=DEVNULL, stdout=PIPE, stderr=PIPE, encoding='ascii')
+    stdout.write(cp.stdout)
+    stderr.write(cp.stderr)
+    assert cp.returncode == 0
 
 
 @fixture(scope='module')
