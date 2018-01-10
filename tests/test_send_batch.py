@@ -3,14 +3,20 @@ import yaml
 
 
 def test_a(send_batch_fixture):
-    print(send_batch_fixture.root_dir.listdir())
+    for k in sorted(vars(send_batch_fixture)):
+        print(k, getattr(send_batch_fixture, k))
     with open(send_batch_fixture.root_dir.join('config.yaml')) as fin:
-        print(yaml.load(fin))
-    assert 0, vars(send_batch_fixture)
+        config = yaml.load(fin)
+    print()
+    for k in sorted(config):
+        print(k, config[k])
+    assert 'pm_root' in config
+    assert 'sub_root' in config
+    assert 0
 
 
 def test_b(send_batch_fixture):
-    assert 0, send_batch_fixture
+    pass
 
 
 @fixture(scope='module')
