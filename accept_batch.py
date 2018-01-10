@@ -16,10 +16,11 @@ input_path= Path(sys.argv[1])
 dest_path = Path(g_base, *input_path.parts[-5:])
 input_path.glob('meta.{yaml,yml,txt}')
 meta_hits = list(input_path.glob('meta.*'))
-assert len(meta_hits) == 1, meta_hits
+assert len(meta_hits) == 1,"There are too many meta hits"
 meta_path = meta_hits[0]
 meta_doc = yaml.load(meta_path.read_text())
 dest_path = Path(g_base, *input_path.parts[-5:])
+#assert type(name) is StringType, "name is not a string: %r" % name
 
 logging.basicConfig(level=logging.INFO)
 class Generic:
