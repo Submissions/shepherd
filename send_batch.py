@@ -4,6 +4,7 @@ import os
 import sys
 from pathlib import Path
 import yaml
+import datetime
 
 project_name = sys.argv[1]
 phase = sys.argv[2]
@@ -14,13 +15,13 @@ batch_input_file = sys.argv[6]
 globus_input_file = sys.argv[7]
 
 sizes = []
-lines = []
 
 with open(batch_input_file) as f:
     next(f)
     for raw_line in f:
         line = raw_line.rstrip().split("\t")
         cram_paths = line[8]
+        extension = cram_paths.split(".")[-1]
         s = (os.path.getsize(cram_paths))
         sizes.append(s)
         min_size = min(sizes)
@@ -51,7 +52,12 @@ d = dict(input_file=batch_input_file,
          num_records=num_records,
          file_sizes=size_range,
          funding_source = funding,
-         project_code = project_code)
+         project_code = project_code,
+         batch_date = datetime.date.today(),
+         attempt = batch_name[-1],
+         file_formats = extension.upper(),
+         batch_title = 'TOPmed_' + subproject_name.upper()
+         + '_batch' + batch_name)
 
 with open('meta.yaml','w') as fout:
     yaml.dump(d, fout, default_flow_style=False)
