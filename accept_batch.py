@@ -8,7 +8,7 @@ import yaml
 Arguement will be path where meta file is found
 need to run in prod, since will call aspera
 """
-sub_base = Path('/stornext/snfs1/submissions/topmed/test')
+sub_base = Path('/stornext/snfs1/submissions/topmed')
 #asp_base = Path('/aspera/share/share/globusupload/submissions/test') #Might need to run in prod
 asp_base = Path('aspera/share/globusupload/submissions')
 g_base = Path('/groups/submissions/metadata/v1')
