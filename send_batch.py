@@ -2,6 +2,7 @@
 
 import os
 import sys
+import shutil
 from pathlib import Path
 import yaml
 import datetime
@@ -11,8 +12,8 @@ phase = sys.argv[2]
 subproject_name = sys.argv[3]
 batch_group = sys.argv[4]
 batch_name = sys.argv[5]
-batch_input_file = sys.argv[6]
-globus_input_file = sys.argv[7]
+jw_input_file = sys.argv[6]
+batch_input_file = sys.argv[7]
 
 sizes = []
 
@@ -45,6 +46,9 @@ bn = batch_name
 batch_path = (pr/ph/sn/bg/bn)
 batch_path.mkdir(exist_ok=True, parents=True)
 
+shutil.copy(batch_input_file, batch_path)
+shutil.copy(jw_input_file, batch_path)
+
 sub_path = Path('sub')
 sub_path.symlink_to('../sub')
 
@@ -61,3 +65,10 @@ d = dict(input_file=batch_input_file,
 
 with open('meta.yaml','w') as fout:
     yaml.dump(d, fout, default_flow_style=False)
+
+print('Summary stats:')
+print()
+print('Worklist for ' + batch_input_file)
+print()
+print(os.path.abspath(batch_path))
+print()
