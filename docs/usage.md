@@ -1,6 +1,6 @@
 Customer:
 
-    send_batch topmed phase3 cardia 17a CARDIA_batch17a.tsv CARDIA_batch17a_globus.tsv
+    send_batch topmed phase3 cardia 01 17a CARDIA_batch17a.tsv CARDIA_batch17a_globus.tsv
 
 Effects:
 
