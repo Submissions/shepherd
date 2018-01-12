@@ -72,3 +72,6 @@ print('Worklist for ' + batch_input_file)
 print()
 print(os.path.abspath(batch_path))
 print()
+with open('meta.yaml', 'r') as f:
+    text = f.read()
+    print(text)
