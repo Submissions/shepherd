@@ -2,7 +2,7 @@ from pathlib import Path
 import argparse
 import logging
 import os
-import sh
+#import sh
 import sys
 import yaml
 """
@@ -12,7 +12,7 @@ need to run in prod, since will call aspera
 sub_base = Path('/stornext/snfs1/submissions/topmed')
 asp_base = Path('/aspera/share/share/globusupload/submissions/test') #Might need to run in prod
 asp_base = Path('aspera/share/globusupload/submissions')
-aspd_base="christis@hgsc-aspera1.hgsc.bcm.edu:/share/share/globusupload/submissions/$batch_type/$batch_name"
+aspd_base="christis@hgsc-aspera1.hgsc.bcm.edu:/share/share/globusupload/submissions"
 g_base = Path('/groups/submissions/metadata/v1')
 input_path= Path(sys.argv[1])
 dest_path = Path(g_base, *input_path.parts[-5:])
@@ -59,9 +59,11 @@ def check_or_make(path):
         path.mkdir(parents=True)
         write_yaml(path)
 
-def aspera_path(input_p):
+def aspera_path():
     #christis@hgsc-aspera1.hgsc.bcm.edu:/share/share/globusupload/submissions/$batch_type/$batch_name/
-    os.system("echo 
+    cmd="echo "+input_p
+    os.system(cmd)
+
 def make_paths(input_p):
     md5_g = Path(input_p,"md5")
     check_or_make(md5_g)
@@ -85,3 +87,5 @@ if is_cram(meta) == True:
     make_paths(input_path)
 else:
     logging.error("!!Not a Cram!!!")
+
+aspera_path(input_path)
