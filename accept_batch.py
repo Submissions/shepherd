@@ -34,7 +34,7 @@ def find_tsv(input_p):
     assert len(spreadsheet_hits) == 1,"There are too many meta hits"
     spreadsheet_path=spreadsheet_hits[0]
     sname = spreadsheet_path.name
-    return sname
+    print (sname)
 
 def is_cram(meta):
     "This bad boy ensures file format is just cram"
@@ -94,7 +94,9 @@ if is_cram(meta) == True:
 else:
     logging.error("!!Not a Cram!!!")
 
+find_tsv(input_path)
+
 logging.info("PROJECT CODE: %s" % (project_code))
 logging.info("FILE NAME: %s" % (meta_path.name))
-logging.info('TSV NAME: %S' % (find_tsv(input_path) 
+#logging.info('TSV NAME: %S' % (find_tsv(input_path))) 
 #aspera_path(input_path)
