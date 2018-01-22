@@ -11,7 +11,6 @@ need to run in prod, since will call aspera
 """
 sub_base = Path('/stornext/snfs1/submissions/topmed')
 asp_base = Path('/aspera/share/share/globusupload/submissions/test') #Might need to run in prod
-asp_base = Path('aspera/share/globusupload/submissions')
 aspd_base="christis@hgsc-aspera1.hgsc.bcm.edu:/share/share/globusupload/submissions"
 g_base = Path('/groups/submissions/metadata/v1')
 input_path= Path(sys.argv[1])
@@ -59,9 +58,9 @@ def check_or_make(path):
         path.mkdir(parents=True)
         write_yaml(path)
 
-def aspera_path():
+def aspera_path(path):
     #christis@hgsc-aspera1.hgsc.bcm.edu:/share/share/globusupload/submissions/$batch_type/$batch_name/
-    cmd="echo "+input_p
+    cmd="mkdir -p "+aspd_base +"/"+sub_proj+"/"+batch_name
     os.system(cmd)
 
 def make_paths(input_p):
@@ -69,8 +68,8 @@ def make_paths(input_p):
     check_or_make(md5_g)
     val_g = Path(input_p,"validation")
     check_or_make(val_g)
-    #asp = Path(asp_base,sub_proj,batch_name)
-    #check_or_make(asp)
+    asp = Path(asp_base,sub_proj,batch_name)
+    check_or_make(asp)
     md5_s = Path(sub_base,"md5-batches",batch_name)
     val_s = Path(sub_base,"validation-batches",batch_name)
     check_or_make(md5_s)
@@ -88,4 +87,4 @@ if is_cram(meta) == True:
 else:
     logging.error("!!Not a Cram!!!")
 
-aspera_path(input_path)
+#aspera_path(input_path)
