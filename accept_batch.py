@@ -10,7 +10,7 @@ Arguement will be path where meta file is found
 need to run in prod, since will call aspera
 """
 sub_base = Path('/stornext/snfs1/submissions/topmed')
-asp_base = Path('/aspera/share/share/globusupload/submissions/test') #Might need to run in prod
+asp_base = Path('/aspera/share/globusupload/submissions/test')
 aspd_base="christis@hgsc-aspera1.hgsc.bcm.edu:/share/share/globusupload/submissions"
 g_base = Path('/groups/submissions/metadata/v1')
 input_path= Path(sys.argv[1])
