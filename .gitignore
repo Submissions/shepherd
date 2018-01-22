@@ -99,3 +99,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# project-specific items
+/md5
+/validation
