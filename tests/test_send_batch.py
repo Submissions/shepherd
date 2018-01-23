@@ -58,3 +58,4 @@ def generate_worklist(dest_dir):
         fout.write(
             template.render(crams=path.abspath('tests/resources/crams'))
         )
+        fout.write('\n')
