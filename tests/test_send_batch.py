@@ -36,7 +36,7 @@ def test_batch_dir_created(ran_send_batch):
 def ran_send_batch(send_batch_fixture):
     args = [executable,
             'send_batch.py',
-            'topmed', '3', 'tmsol', '01', '24a',
+            'topmed', 'phase3', 'tmsol', '01', '24a',
             'tests/resources/TMSOL_batch24am.tsv',
             send_batch_fixture.root_dir/'TMSOL_batch24a_cram.tsv']
     cp = run(args, stdin=DEVNULL, stdout=PIPE, stderr=PIPE, encoding='ascii',
