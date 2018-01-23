@@ -41,6 +41,12 @@ def test_batch_files_copied(ran_send_batch):
     cmp(ran_send_batch.generated_worklist_path, cram_path)
 
 
+def test_batch_symlink(ran_send_batch):
+    link_path = ran_send_batch.batch_path/'sub'
+    # assert link_path.islink()
+    # assert link_path.readlink() == '../../../../../../sub/topmed/phase3/tmsol/01/24a'
+
+
 @fixture(scope='module')
 def ran_send_batch(send_batch_fixture):
     args = [executable,
@@ -70,6 +76,8 @@ class SendBatchFixture:
         group_path = self.pm_root/'topmed/phase3/tmsol/01'
         group_path.ensure_dir()
         self.batch_path = group_path/'24a'
+        self.sub_batch_path = self.sub_root/'topmed/phase3/tmsol/01/24a'
+        self.sub_batch_path.ensure_dir()
         # Main config file
         self.config_file = self.root_dir.join('config.yaml')
         config = dict(pm_root=str(self.pm_root), sub_root=str(self.sub_root))
