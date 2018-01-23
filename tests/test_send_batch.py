@@ -19,7 +19,12 @@ def test_fixture(send_batch_fixture):
     assert 'sub_root' in config
 
 
-def test_can_run_send_batch(send_batch_fixture):
+def test_can_run_send_batch(ran_send_batch):
+    pass  # If we get here, that just proves we could run send_batch.py.
+
+
+@fixture(scope='module')
+def ran_send_batch(send_batch_fixture):
     args = [executable,
             'send_batch.py',
             'topmed', '3', 'tmsol', '01', '24a',
@@ -29,6 +34,7 @@ def test_can_run_send_batch(send_batch_fixture):
     stdout.write(cp.stdout)
     stderr.write(cp.stderr)
     assert cp.returncode == 0
+    return send_batch_fixture
 
 
 @fixture(scope='module')
