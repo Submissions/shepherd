@@ -54,14 +54,17 @@ def send_batch_fixture(tmpdir_factory):
 
 class SendBatchFixture:
     def __init__(self, tmpdir_factory):
+        # Main directories
         self.root_dir = tmpdir_factory.mktemp('send_batch')
         self.pm_root = self.root_dir.join('pm_root')
         self.sub_root = self.root_dir.join('sub_root')
+        # Main config file
         self.config_file = self.root_dir.join('config.yaml')
         config = dict(pm_root=str(self.pm_root), sub_root=str(self.sub_root))
         self.config_file.write_text(
             yaml.dump(config, default_flow_style=False), 'ascii'
         )
+        # Input TSV
         generate_worklist(self.root_dir)
 
 
