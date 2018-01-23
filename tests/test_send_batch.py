@@ -1,3 +1,4 @@
+from filecmp import cmp
 from os import path
 from subprocess import run, DEVNULL, PIPE
 from sys import executable, stdout, stderr
@@ -33,6 +34,13 @@ def test_batch_dir_created(ran_send_batch):
     assert ran_send_batch.pm_root.join('topmed/phase3/tmsol/01/24a').isdir()
 
 
+def test_batch_files_copied(ran_send_batch):
+    raw_path = ran_send_batch.batch_path/'TMSOL_batch24am.tsv'
+    cram_path = ran_send_batch.batch_path/'TMSOL_batch24a_cram.tsv'
+    cmp(ran_send_batch.raw_worklist_path, raw_path)
+    cmp(ran_send_batch.generated_worklist_path, cram_path)
+
+
 @fixture(scope='module')
 def ran_send_batch(send_batch_fixture):
     args = [executable,
@@ -61,6 +69,7 @@ class SendBatchFixture:
         self.sub_root = self.root_dir.join('sub_root')
         group_path = self.pm_root/'topmed/phase3/tmsol/01'
         group_path.ensure_dir()
+        self.batch_path = group_path/'24a'
         # Main config file
         self.config_file = self.root_dir.join('config.yaml')
         config = dict(pm_root=str(self.pm_root), sub_root=str(self.sub_root))
@@ -72,7 +81,8 @@ class SendBatchFixture:
         defaults_yaml_src = local('tests/resources/defaults.yaml')
         defaults_yaml_src.copy(defaults_yaml_path)
         # Input TSV
-        generate_worklist(self.root_dir)
+        self.raw_worklist_path = local('tests/resources/TMSOL_batch24am.tsv')
+        self.generated_worklist_path = generate_worklist(self.root_dir)
 
 
 def generate_worklist(dest_dir):
@@ -85,3 +95,4 @@ def generate_worklist(dest_dir):
             template.render(crams=path.abspath('tests/resources/crams'))
         )
         fout.write('\n')
+    return dest_path
