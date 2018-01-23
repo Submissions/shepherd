@@ -24,6 +24,7 @@ def test_can_run_send_batch(ran_send_batch):
 
 
 def test_pm_root_created(ran_send_batch):
+    print(ran_send_batch.stdout)
     assert ran_send_batch.pm_root.isdir()
 
 
@@ -40,8 +41,8 @@ def ran_send_batch(send_batch_fixture):
             send_batch_fixture.root_dir/'TMSOL_batch24a_cram.tsv']
     cp = run(args, stdin=DEVNULL, stdout=PIPE, stderr=PIPE, encoding='ascii',
              env=dict(SHEPHERD_CONFIG_FILE=send_batch_fixture.config_file))
-    stdout.write(cp.stdout)
-    stderr.write(cp.stderr)
+    send_batch_fixture.stdout = cp.stdout
+    send_batch_fixture.stderr = cp.stderr
     assert cp.returncode == 0
     return send_batch_fixture
 
