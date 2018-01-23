@@ -7,6 +7,12 @@ from pathlib import Path
 import yaml
 import datetime
 
+from config import get_config
+
+
+config = get_config()
+pm_root = config.pm_root
+
 project_name = sys.argv[1]
 phase = sys.argv[2]
 subproject_name = sys.argv[3]
@@ -37,7 +43,7 @@ with open("defaults.yaml") as f:
 funding = d['funding_source']
 project_code = d['project_code']
 
-pr = Path(project_name)
+pr = Path(pm_root, project_name)
 ph = phase
 sn = subproject_name
 bg = batch_group
