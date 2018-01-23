@@ -30,7 +30,8 @@ def ran_send_batch(send_batch_fixture):
             'topmed', '3', 'tmsol', '01', '24a',
             'tests/resources/TMSOL_batch24am.tsv',
             'local/pytest-tmp/pytest-hale/TMSOL_batch24a_cram.tsv']
-    cp = run(args, stdin=DEVNULL, stdout=PIPE, stderr=PIPE, encoding='ascii')
+    cp = run(args, stdin=DEVNULL, stdout=PIPE, stderr=PIPE, encoding='ascii',
+             env=dict(SHEPHERD_CONFIG_FILE=send_batch_fixture.config_file))
     stdout.write(cp.stdout)
     stderr.write(cp.stderr)
     assert cp.returncode == 0
