@@ -65,8 +65,8 @@ class SendBatchFixture:
     def __init__(self, tmpdir_factory):
         # Main directories
         self.root_dir = tmpdir_factory.mktemp('send_batch')
-        self.pm_root = self.root_dir.join('pm_root')
-        self.sub_root = self.root_dir.join('sub_root')
+        self.pm_root = self.root_dir.ensure_dir('pm_root')
+        self.sub_root = self.root_dir.ensure_dir('sub_root')
         group_path = self.pm_root/'topmed/phase3/tmsol/01'
         group_path.ensure_dir()
         self.batch_path = group_path/'24a'
@@ -83,6 +83,8 @@ class SendBatchFixture:
         # Input TSV
         self.raw_worklist_path = local('tests/resources/TMSOL_batch24am.tsv')
         self.generated_worklist_path = generate_worklist(self.root_dir)
+        # Symlink between pm_root and sub_root
+        self.pm_root.join('sub').mksymlinkto('../sub_root')
 
 
 def generate_worklist(dest_dir):
