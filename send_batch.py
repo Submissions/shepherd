@@ -38,16 +38,17 @@ with open(batch_input_file) as f:
         size_range = str(gb_min_size) + '-' + str(gb_max_size)
         num_records = len(sizes)
 
-with open("defaults.yaml") as f:
-    d = yaml.load(f)
-funding = d['funding_source']
-project_code = d['project_code']
-
 pr = Path(pm_root, project_name)
 ph = phase
 sn = subproject_name
 bg = batch_group
 bn = batch_name
+
+batch_group_path = pr/ph/sn/bg
+with open(batch_group_path/'defaults.yaml') as f:
+    d = yaml.load(f)
+funding = d['funding_source']
+project_code = d['project_code']
 
 batch_path = (pr/ph/sn/bg/bn)
 batch_path.mkdir(exist_ok=True, parents=True)

@@ -3,6 +3,7 @@ from subprocess import run, DEVNULL, PIPE
 from sys import executable, stdout, stderr
 
 import jinja2
+from py.path import local
 from pytest import fixture
 import yaml
 
@@ -58,12 +59,18 @@ class SendBatchFixture:
         self.root_dir = tmpdir_factory.mktemp('send_batch')
         self.pm_root = self.root_dir.join('pm_root')
         self.sub_root = self.root_dir.join('sub_root')
+        group_path = self.pm_root/'topmed/phase3/tmsol/01'
+        group_path.ensure_dir()
         # Main config file
         self.config_file = self.root_dir.join('config.yaml')
         config = dict(pm_root=str(self.pm_root), sub_root=str(self.sub_root))
         self.config_file.write_text(
             yaml.dump(config, default_flow_style=False), 'ascii'
         )
+        # defaults.yaml
+        defaults_yaml_path = group_path/'defaults.yaml'
+        defaults_yaml_src = local('tests/resources/defaults.yaml')
+        defaults_yaml_src.copy(defaults_yaml_path)
         # Input TSV
         generate_worklist(self.root_dir)
 
