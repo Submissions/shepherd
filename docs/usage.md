@@ -10,7 +10,7 @@ Effects:
 * Fetches sizes of all CRAM files.
 * Creates:
   - /groups/project-managers/tech/metadata/v1/topmed/phase3/cardia/01/17a/
-    - sub -> ../../../../../../sub/v1/topmed/phase3/cardia/01/17a
+    - sub -> ../../../../../sub/v1/topmed/phase3/cardia/01/17a
     - meta.yaml
 * Copies the two input files into the new directory ("17a" in this case)
 * Outputs:
