@@ -33,8 +33,6 @@ Effects:
     - /groups/submissions/metadata/v1/topmed/phase3/cardia/01/17a/{md5,validation}
     - /groups/submissions/metadata/v1/topmed/phase3/cardia/01/17a/state/{00,current}.yaml
     - /aspera/share/globusupload/submissions/cardia/CARDIA_batch17a/meta.yaml
-    - /stornext/submissions/topmed/md5-batches/CARDIA_batch17a/meta.yaml
-    - /stornext/submissions/topmed/validation-batches/CARDIA_batch17a/meta.yaml
 * Outputs:
     - input TSV file name
     - `funding_code`
