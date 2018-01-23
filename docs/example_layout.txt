@@ -1,10 +1,10 @@
 groups
     project-managers
         tech
-            metadata ? submission_batches?
+            metadata
                 README.txt (describes purpose and how to add new versions)
-                sub -> /groups/submissions/metadata (top-level linkage)
                 v1
+                    sub -> /groups/submissions/metadata/v1 (top-level linkage)
                     README.txt (describes layout of current version and previous)
                     meta.yaml
                         version: 1.4
@@ -34,7 +34,7 @@ groups
                                             project_code: proj-dm0019
                                         README.txt (normally missing)
     submissions
-        metadata ?
+        metadata
             v1
                 topmed
                     phase3
