@@ -23,6 +23,14 @@ def test_can_run_send_batch(ran_send_batch):
     pass  # If we get here, that just proves we could run send_batch.py.
 
 
+def test_pm_root_created(ran_send_batch):
+    assert ran_send_batch.pm_root.isdir()
+
+
+def test_batch_dir_created(ran_send_batch):
+    assert ran_send_batch.pm_root.join('topmed/phase3/tmsol/01/24a').isdir()
+
+
 @fixture(scope='module')
 def ran_send_batch(send_batch_fixture):
     args = [executable,
