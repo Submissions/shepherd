@@ -1,3 +1,9 @@
+from filecmp import cmp
+from os import path
+from subprocess import run, DEVNULL, PIPE
+from sys import executable, stdout, stderr
+
+from py.path import local
 from pytest import fixture
 import yaml
 
@@ -14,6 +20,15 @@ def test_fixture(accept_batch_fixture):
     assert 'sub_root' in config
 
 
+def test_can_run_accept_batch(ran_accept_batch):
+    pass
+
+
+@fixture(scope='module')
+def ran_accept_batch(accept_batch_fixture):
+    args = []
+
+
 @fixture(scope='module')
 def accept_batch_fixture(tmpdir_factory):
     return AcceptBatchFixture(tmpdir_factory)
@@ -24,6 +39,9 @@ class AcceptBatchFixture:
         self.root_dir = tmpdir_factory.mktemp('accept_batch')
         self.pm_root = self.root_dir.join('pm_root')
         self.sub_root = self.root_dir.join('sub_root')
+        group_path = self.pm_root/'topmed/phase3/tmsol/01'
+        group_path.ensure_dir()
+        # Main config file
         self.config_file = self.root_dir.join('config.yaml')
         config = dict(pm_root=str(self.pm_root), sub_root=str(self.sub_root))
         self.config_file.write_text(
