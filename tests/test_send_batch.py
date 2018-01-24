@@ -43,8 +43,11 @@ def test_batch_files_copied(ran_send_batch):
 
 def test_batch_symlink(ran_send_batch):
     link_path = ran_send_batch.batch_path/'sub'
-    # assert link_path.islink()
-    # assert link_path.readlink() == '../../../../../../sub/topmed/phase3/tmsol/01/24a'
+    assert link_path.islink()
+    assert link_path.isdir()
+    assert link_path.realpath() == ran_send_batch.sub_batch_path
+    expected_link = '../../../../../sub/topmed/phase3/tmsol/01/24a'
+    assert link_path.readlink() == expected_link
 
 
 @fixture(scope='module')

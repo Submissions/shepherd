@@ -56,8 +56,10 @@ batch_path.mkdir(exist_ok=True, parents=True)
 shutil.copy(batch_input_file, batch_path)
 shutil.copy(jw_input_file, batch_path)
 
-sub_path = Path('sub')
-sub_path.symlink_to('../sub')
+sub_path = batch_path/'sub'
+sub_path.symlink_to(
+    '../../../../../sub/{}/{}/{}/{}/{}'.format(project_name, ph, sn, bg, bn)
+)
 
 d = dict(input_file=batch_input_file,
          num_records=num_records,
