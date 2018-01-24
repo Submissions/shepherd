@@ -50,7 +50,7 @@ def test_batch_symlink(ran_send_batch):
     assert link_path.readlink() == expected_link
 
 
-def test_meta_yaml(ran_send_batch):
+def test_meta_yaml(ran_send_batch, yesterday_and_today):
     """Expect:
         batch_title: TOPMed_TMSOL_batch24a
         input: TMSOL_batch24a_cram.tsv
@@ -70,9 +70,8 @@ def test_meta_yaml(ran_send_batch):
     meta = Generic()
     meta.__dict__.update(meta_dict)
     assert meta.input == 'TMSOL_batch24a_cram.tsv'
-    today = date.today()
-    yesterday = today - timedelta(1)
-    assert yesterday <= meta.batch_date <= today
+    d = yesterday_and_today.d
+    assert d.yesterday <= meta.batch_date <= d.today
     assert meta.file_formats == ['CRAM']
     assert meta.num_records == 10
     assert meta.file_sizes == '0-0G'
@@ -82,26 +81,43 @@ def test_meta_yaml(ran_send_batch):
     assert meta.batch_title == 'TOPMed_TMSOL_batch24a'
 
 
-class Generic:
-    """Just to wrap a dict"""
-
-
 def test_no_error(ran_send_batch):
     assert not ran_send_batch.stderr
 
 
-def test_output(ran_send_batch):
+def test_output(ran_send_batch, yesterday_and_today):
     # print(ran_send_batch.stdout)
     with open('tests/resources/send_batch_output.txt') as fin:
         template = fin.read()
-    expect = template.format(pm_root=ran_send_batch.pm_root,
-                             today=date.today().isoformat())
-    # TODO: Race condidion if run at midnight.
+    s = yesterday_and_today.s
+    expect_y = template.format(pm_root=ran_send_batch.pm_root,
+                               today=s.yesterday)
+    expect_t = template.format(pm_root=ran_send_batch.pm_root,
+                               today=s.today)
+    stdout = ran_send_batch.stdout
+    print(repr(stdout))
     print('===============')
-    print(repr(ran_send_batch.stdout))
-    print('===============')
-    print(repr(expect))
-    assert ran_send_batch.stdout == expect
+    print(repr(expect_t))
+    assert (stdout == expect_t) or (stdout == expect_y)
+
+
+@fixture(scope='module')
+def yesterday_and_today():
+    """Prode `date` (d) and `str` (s) versions of yesterday and today."""
+    d = Generic()
+    d.today = date.today()
+    d.yesterday = d.today - timedelta(1)
+    s = Generic()
+    s.today = d.today.isoformat()
+    s.yesterday = d.yesterday.isoformat()
+    result = Generic()
+    result.d = d
+    result.s = s
+    return result
+
+
+class Generic:
+    """Just to wrap a dict"""
 
 
 @fixture(scope='module')
