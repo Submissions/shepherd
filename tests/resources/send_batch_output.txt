@@ -3,10 +3,10 @@
 
 WORKLIST for TMSOL_batch24a_cram.tsv
 
-{{ pm_root }}/topmed/phase3/tmsol/01/24a
+{pm_root}/topmed/phase3/tmsol/01/24a
 
 attempt: a
-batch_date: {{ today }}
+batch_date: {today}
 batch_title: TOPMed_TMSOL_batch24a
 file_formats:
 - CRAM

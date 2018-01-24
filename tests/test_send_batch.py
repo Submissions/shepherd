@@ -4,7 +4,6 @@ from os import path
 from subprocess import run, DEVNULL, PIPE
 from sys import executable, stdout, stderr
 
-import jinja2
 from py.path import local
 from pytest import fixture
 import yaml
@@ -94,11 +93,9 @@ def test_no_error(ran_send_batch):
 def test_output(ran_send_batch):
     # print(ran_send_batch.stdout)
     with open('tests/resources/send_batch_output.txt') as fin:
-        template_str = fin.read()
-    template = jinja2.Template(template_str)
-    expect = template.render(pm_root=ran_send_batch.pm_root,
-                             today=date.today().isoformat()) + '\n'
-    # TODO: Handle Jinja2 stripping the trailing newline better.
+        template = fin.read()
+    expect = template.format(pm_root=ran_send_batch.pm_root,
+                             today=date.today().isoformat())
     # TODO: Race condidion if run at midnight.
     print('===============')
     print(repr(ran_send_batch.stdout))
@@ -157,12 +154,10 @@ class SendBatchFixture:
 
 def generate_worklist(dest_dir):
     with open('tests/resources/TMSOL_batch24am_cram.tsv') as fin:
-        template_str = fin.read()
-    template = jinja2.Template(template_str)
+        template = fin.read()
     dest_path = dest_dir.join('TMSOL_batch24a_cram.tsv')
     with dest_path.open('w', 'ascii') as fout:
         fout.write(
-            template.render(crams=path.abspath('tests/resources/crams'))
+            template.format(crams=path.abspath('tests/resources/crams'))
         )
-        fout.write('\n')
     return dest_path
