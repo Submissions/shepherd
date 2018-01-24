@@ -26,7 +26,7 @@ def test_can_run_accept_batch(ran_accept_batch):
 
 @fixture(scope='module')
 def ran_accept_batch(accept_batch_fixture):
-    args = []
+    args = [executable, 'topmed/phase3/']
 
 
 @fixture(scope='module')
