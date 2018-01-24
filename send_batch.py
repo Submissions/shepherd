@@ -73,16 +73,17 @@ d = dict(input=os.path.basename(batch_input_file),
          + '_batch' + batch_name)
 # TODO: Hardcoded "TOPMed" into batch_title.
 
-
-with open(batch_path/'meta.yaml','w') as fout:
+meta_path = batch_path/'meta.yaml'
+with open(meta_path, 'w') as fout:
     yaml.dump(d, fout, default_flow_style=False)
 
-print('Summary stats:')
+print(num_records, 'records')
+print(size_range)
 print()
-print('Worklist for ' + batch_input_file)
+print('WORKLIST for ' + os.path.basename(batch_input_file))
 print()
 print(os.path.abspath(batch_path))
 print()
-with open('meta.yaml', 'r') as f:
+with open(meta_path) as f:
     text = f.read()
-    print(text)
+    sys.stdout.write(text)

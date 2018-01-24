@@ -87,6 +87,26 @@ class Generic:
     """Just to wrap a dict"""
 
 
+def test_no_error(ran_send_batch):
+    assert not ran_send_batch.stderr
+
+
+def test_output(ran_send_batch):
+    # print(ran_send_batch.stdout)
+    with open('tests/resources/send_batch_output.txt') as fin:
+        template_str = fin.read()
+    template = jinja2.Template(template_str)
+    expect = template.render(pm_root=ran_send_batch.pm_root,
+                             today=date.today().isoformat()) + '\n'
+    # TODO: Handle Jinja2 stripping the trailing newline better.
+    # TODO: Race condidion if run at midnight.
+    print('===============')
+    print(repr(ran_send_batch.stdout))
+    print('===============')
+    print(repr(expect))
+    assert ran_send_batch.stdout == expect
+
+
 @fixture(scope='module')
 def ran_send_batch(send_batch_fixture):
     args = [executable,
