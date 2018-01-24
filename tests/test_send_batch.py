@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from filecmp import cmp
 from os import path
 from subprocess import run, DEVNULL, PIPE
@@ -48,6 +49,42 @@ def test_batch_symlink(ran_send_batch):
     assert link_path.realpath() == ran_send_batch.sub_batch_path
     expected_link = '../../../../../sub/topmed/phase3/tmsol/01/24a'
     assert link_path.readlink() == expected_link
+
+
+def test_meta_yaml(ran_send_batch):
+    """Expect:
+        batch_title: TOPMed_TMSOL_batch24a
+        input: TMSOL_batch24a_cram.tsv
+        batch_date: 2018-01-24 (whatever today's date is)
+        file_formats:
+            - CRAM
+        num_records: 10
+        file_sizes: 0-0G
+        attempt: a
+        funding_source: TOPMED_phase3_123456
+        project_code: proj-dm0019
+    """
+    meta_path = ran_send_batch.batch_path/'meta.yaml'
+    assert meta_path.isfile()
+    with open(meta_path) as fin:
+        meta_dict = yaml.load(fin)
+    meta = Generic()
+    meta.__dict__.update(meta_dict)
+    assert meta.input == 'TMSOL_batch24a_cram.tsv'
+    today = date.today()
+    yesterday = today - timedelta(1)
+    assert yesterday <= meta.batch_date <= today
+    assert meta.file_formats == ['CRAM']
+    assert meta.num_records == 10
+    assert meta.file_sizes == '0-0G'
+    assert meta.attempt == 'a'
+    assert meta.funding_source == 'TOPMED_phase3_123456'
+    assert meta.project_code == 'proj-dm0019'
+    assert meta.batch_title == 'TOPMed_TMSOL_batch24a'
+
+
+class Generic:
+    """Just to wrap a dict"""
 
 
 @fixture(scope='module')

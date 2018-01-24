@@ -35,7 +35,7 @@ with open(batch_input_file) as f:
         gb_min_size = round(min_size/2**30)
         max_size = max(sizes)
         gb_max_size = round(max_size / 2**30)
-        size_range = str(gb_min_size) + '-' + str(gb_max_size)
+        size_range = str(gb_min_size) + '-' + str(gb_max_size) + 'G'
         num_records = len(sizes)
 
 pr = Path(pm_root, project_name)
@@ -61,18 +61,20 @@ sub_path.symlink_to(
     '../../../../../sub/{}/{}/{}/{}/{}'.format(project_name, ph, sn, bg, bn)
 )
 
-d = dict(input_file=batch_input_file,
+d = dict(input=os.path.basename(batch_input_file),
          num_records=num_records,
          file_sizes=size_range,
          funding_source = funding,
          project_code = project_code,
          batch_date = datetime.date.today(),
          attempt = batch_name[-1],
-         file_formats = extension.upper(),
-         batch_title = 'TOPmed_' + subproject_name.upper()
+         file_formats = [extension.upper()],
+         batch_title = 'TOPMed_' + subproject_name.upper()
          + '_batch' + batch_name)
+# TODO: Hardcoded "TOPMed" into batch_title.
 
-with open('meta.yaml','w') as fout:
+
+with open(batch_path/'meta.yaml','w') as fout:
     yaml.dump(d, fout, default_flow_style=False)
 
 print('Summary stats:')
