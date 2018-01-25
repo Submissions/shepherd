@@ -26,7 +26,13 @@ def test_can_run_accept_batch(ran_accept_batch):
 
 @fixture(scope='module')
 def ran_accept_batch(accept_batch_fixture):
-    args = [executable, 'topmed/phase3/']
+    args = [executable, 'accept_batch.py', 'tests/resources/']
+    cp = run(args, stdin=DEVNULL, stdout=PIPE, stderr=PIPE, encoding='ascii',
+                 env=dict(SHEPHERD_CONFIG_FILE=accept_batch_fixture.config_file))
+    accept_batch_fixture.stdout = cp.stdout
+    accept_batch_fixture.stderr = cp.stderr
+    assert cp.returncode == 0
+    return accept_batch_fixture
 
 
 @fixture(scope='module')
