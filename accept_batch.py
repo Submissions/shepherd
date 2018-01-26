@@ -5,6 +5,13 @@ import os
 import subprocess
 import sys
 import yaml
+
+from config import get_config
+
+
+config = get_config()
+sub_root = config.sub_root
+
 """
 Arguement will be path where meta file is found
 need to run in prod, since will call aspera
@@ -29,7 +36,7 @@ class Generic:
 meta = Generic()
 meta.__dict__.update(meta_doc)
 
-def find_tsv(input_p):
+def find_tsv(c_p):
     spreadsheet_hits= list(input_p.glob('*.tsv'))
     assert len(spreadsheet_hits) == 1,"There are too many meta hits"
     spreadsheet_path=spreadsheet_hits[0]
