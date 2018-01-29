@@ -1,6 +1,7 @@
 Customer:
 
-    send_batch topmed phase3 cardia 01 17a CARDIA_batch17a.tsv CARDIA_batch17a_globus.tsv
+    cd /groups/project-managers/tech/metadata/v1/topmed/phase3/cardia/01/17a
+    send_batch CARDIA_batch17a_globus.tsv
 
 Effects:
 
@@ -9,10 +10,8 @@ Effects:
   - /groups/project-managers/tech/metadata/v1/topmed/phase3/cardia/01/defaults.yaml
 * Fetches sizes of all CRAM files.
 * Creates:
-  - /groups/project-managers/tech/metadata/v1/topmed/phase3/cardia/01/17a/
-    - sub -> ../../../../../sub/v1/topmed/phase3/cardia/01/17a
-    - meta.yaml
-* Copies the two input files into the new directory ("17a" in this case)
+  - sub -> ../../../../../sub/v1/topmed/phase3/cardia/01/17a
+  - meta.yaml
 * Outputs:
   - summary stats
   - WORKLIST for {output file}
