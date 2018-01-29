@@ -25,8 +25,13 @@ def test_can_run_send_batch(ran_send_batch):
     pass  # If we get here, that just proves we could run send_batch.py.
 
 
+def test_send_batch_returned_0(ran_send_batch):
+    stderr.write(ran_send_batch.stderr)
+    stdout.write(ran_send_batch.stdout)
+    assert ran_send_batch.returncode == 0
+
+
 def test_pm_root_created(ran_send_batch):
-    print(ran_send_batch.stdout)
     assert ran_send_batch.pm_root.isdir()
 
 
@@ -75,6 +80,7 @@ def test_meta_yaml(ran_send_batch, yesterday_and_today):
 
 
 def test_no_error(ran_send_batch):
+    stderr.write(ran_send_batch.stderr)
     assert not ran_send_batch.stderr
 
 
@@ -122,7 +128,7 @@ def ran_send_batch(send_batch_fixture):
              cwd=send_batch_fixture.batch_path)
     send_batch_fixture.stdout = cp.stdout
     send_batch_fixture.stderr = cp.stderr
-    assert cp.returncode == 0
+    send_batch_fixture.returncode = cp.returncode
     return send_batch_fixture
 
 
