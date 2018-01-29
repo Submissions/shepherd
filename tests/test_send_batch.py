@@ -34,13 +34,6 @@ def test_batch_dir_created(ran_send_batch):
     assert ran_send_batch.pm_root.join('topmed/phase3/tmsol/01/24a').isdir()
 
 
-def test_batch_files_copied(ran_send_batch):
-    raw_path = ran_send_batch.batch_path/'TMSOL_batch24am.tsv'
-    cram_path = ran_send_batch.batch_path/'TMSOL_batch24a_cram.tsv'
-    cmp(ran_send_batch.raw_worklist_path, raw_path)
-    cmp(ran_send_batch.generated_worklist_path, cram_path)
-
-
 def test_batch_symlink(ran_send_batch):
     link_path = ran_send_batch.batch_path/'sub'
     assert link_path.islink()
@@ -86,7 +79,6 @@ def test_no_error(ran_send_batch):
 
 
 def test_output(ran_send_batch, yesterday_and_today):
-    # print(ran_send_batch.stdout)
     with open('tests/resources/send_batch_output.txt') as fin:
         template = fin.read()
     s = yesterday_and_today.s
@@ -124,9 +116,7 @@ class Generic:
 def ran_send_batch(send_batch_fixture):
     args = [executable,
             local('send_batch.py'),
-            'topmed', 'phase3', 'tmsol', '01', '24a',
-            local('tests/resources/TMSOL_batch24am.tsv'),
-            send_batch_fixture.root_dir/'TMSOL_batch24a_cram.tsv']
+            send_batch_fixture.batch_path/'TMSOL_batch24a_cram.tsv']
     cp = run(args, stdin=DEVNULL, stdout=PIPE, stderr=PIPE, encoding='ascii',
              env=dict(SHEPHERD_CONFIG_FILE=send_batch_fixture.config_file),
              cwd=send_batch_fixture.batch_path)
@@ -164,7 +154,7 @@ class SendBatchFixture:
         defaults_yaml_src.copy(defaults_yaml_path)
         # Input TSV
         self.raw_worklist_path = local('tests/resources/TMSOL_batch24am.tsv')
-        self.generated_worklist_path = generate_worklist(self.root_dir)
+        self.generated_worklist_path = generate_worklist(self.batch_path)
         # Symlink between pm_root and sub_root
         self.pm_root.join('sub').mksymlinkto('../sub_root')
 

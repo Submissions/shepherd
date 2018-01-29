@@ -13,13 +13,11 @@ from config import get_config
 config = get_config()
 pm_root = config.pm_root
 
-project_name = sys.argv[1]
-phase = sys.argv[2]
-subproject_name = sys.argv[3]
-batch_group = sys.argv[4]
-batch_name = sys.argv[5]
-jw_input_file = sys.argv[6]
-batch_input_file = sys.argv[7]
+# Parse the last 5 directories in the absolute path.
+here = Path().absolute()
+project_name, phase, subproject_name, batch_group, batch_name = here.parts[-5:]
+
+batch_input_file = sys.argv[1]
 
 sizes = []
 
@@ -50,11 +48,8 @@ with open(batch_group_path/'defaults.yaml') as f:
 funding = d['funding_source']
 project_code = d['project_code']
 
-batch_path = (pr/ph/sn/bg/bn)
-batch_path.mkdir(exist_ok=True, parents=True)
-
-shutil.copy(batch_input_file, batch_path)
-shutil.copy(jw_input_file, batch_path)
+batch_path = here
+assert batch_path == pr/ph/sn/bg/bn
 
 sub_path = batch_path/'sub'
 sub_path.symlink_to(
