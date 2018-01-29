@@ -123,12 +123,13 @@ class Generic:
 @fixture(scope='module')
 def ran_send_batch(send_batch_fixture):
     args = [executable,
-            'send_batch.py',
+            local('send_batch.py'),
             'topmed', 'phase3', 'tmsol', '01', '24a',
-            'tests/resources/TMSOL_batch24am.tsv',
+            local('tests/resources/TMSOL_batch24am.tsv'),
             send_batch_fixture.root_dir/'TMSOL_batch24a_cram.tsv']
     cp = run(args, stdin=DEVNULL, stdout=PIPE, stderr=PIPE, encoding='ascii',
-             env=dict(SHEPHERD_CONFIG_FILE=send_batch_fixture.config_file))
+             env=dict(SHEPHERD_CONFIG_FILE=send_batch_fixture.config_file),
+             cwd=send_batch_fixture.batch_path)
     send_batch_fixture.stdout = cp.stdout
     send_batch_fixture.stderr = cp.stderr
     assert cp.returncode == 0
@@ -148,7 +149,7 @@ class SendBatchFixture:
         self.sub_root = self.root_dir.ensure_dir('sub_root')
         group_path = self.pm_root/'topmed/phase3/tmsol/01'
         group_path.ensure_dir()
-        self.batch_path = group_path/'24a'
+        self.batch_path = group_path.ensure_dir('24a')
         self.sub_batch_path = self.sub_root/'topmed/phase3/tmsol/01/24a'
         self.sub_batch_path.ensure_dir()
         # Main config file
