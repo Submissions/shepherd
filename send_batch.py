@@ -10,9 +10,6 @@ import datetime
 from config import get_config
 
 
-config = get_config()
-pm_root = config.pm_root
-
 # Parse the last 5 directories in the absolute path.
 here = Path().absolute()
 project_name, phase, subproject_name, batch_group, batch_name = here.parts[-5:]
@@ -36,24 +33,18 @@ with open(batch_input_file) as f:
         size_range = str(gb_min_size) + '-' + str(gb_max_size) + 'G'
         num_records = len(sizes)
 
-pr = Path(pm_root, project_name)
-ph = phase
-sn = subproject_name
-bg = batch_group
-bn = batch_name
+batch_group_path = here.parent
 
-batch_group_path = pr/ph/sn/bg
 with open(batch_group_path/'defaults.yaml') as f:
     d = yaml.load(f)
 funding = d['funding_source']
 project_code = d['project_code']
 
-batch_path = here
-assert batch_path == pr/ph/sn/bg/bn
-
-sub_path = batch_path/'sub'
+sub_path = here/'sub'
 sub_path.symlink_to(
-    '../../../../../sub/{}/{}/{}/{}/{}'.format(project_name, ph, sn, bg, bn)
+    '../../../../../sub/{}/{}/{}/{}/{}'.format(
+        *(here.parts[-5:])
+    )
 )
 
 d = dict(input=os.path.basename(batch_input_file),
@@ -68,7 +59,7 @@ d = dict(input=os.path.basename(batch_input_file),
          + '_batch' + batch_name)
 # TODO: Hardcoded "TOPMed" into batch_title.
 
-meta_path = batch_path/'meta.yaml'
+meta_path = here/'meta.yaml'
 with open(meta_path, 'w') as fout:
     yaml.dump(d, fout, default_flow_style=False)
 
@@ -77,7 +68,7 @@ print(size_range)
 print()
 print('WORKLIST for ' + os.path.basename(batch_input_file))
 print()
-print(os.path.abspath(batch_path))
+print(os.path.abspath(here))
 print()
 with open(meta_path) as f:
     text = f.read()
