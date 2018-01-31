@@ -65,19 +65,17 @@ def check_or_make(path):
         path.mkdir(parents=True)
         write_yaml(path)
 
-def aspera_path(path):
-    #christis@hgsc-aspera1.hgsc.bcm.edu:/share/share/globusupload/submissions/$batch_type/$batch_name/
-    cmd="mkdir -p "+aspd_base +"/"+sub_proj+"/"+batch_name
+def aspera_path(input_p):
+    cmd="scp -r "+ "meta.yaml" +" "+ aspd_base+"/"+batch_name+"/"
     process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
+    print (cmd)
 
 def make_paths(input_p):
     md5_g = Path(input_p,"md5")
     check_or_make(md5_g)
     val_g = Path(input_p,"validation")
     check_or_make(val_g)
-    asp = Path(asp_base,sub_proj,batch_name)
-    check_or_make(asp)
     md5_s = Path(sub_base,"md5-batches",batch_name)
     val_s = Path(sub_base,"validation-batches",batch_name)
     check_or_make(md5_s)
