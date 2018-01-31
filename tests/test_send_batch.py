@@ -1,9 +1,9 @@
+from datetime import date, timedelta
 from filecmp import cmp
 from os import path
 from subprocess import run, DEVNULL, PIPE
 from sys import executable, stdout, stderr
 
-import jinja2
 from py.path import local
 from pytest import fixture
 import yaml
@@ -25,20 +25,18 @@ def test_can_run_send_batch(ran_send_batch):
     pass  # If we get here, that just proves we could run send_batch.py.
 
 
+def test_send_batch_returned_0(ran_send_batch):
+    stderr.write(ran_send_batch.stderr)
+    stdout.write(ran_send_batch.stdout)
+    assert ran_send_batch.returncode == 0
+
+
 def test_pm_root_created(ran_send_batch):
-    print(ran_send_batch.stdout)
     assert ran_send_batch.pm_root.isdir()
 
 
 def test_batch_dir_created(ran_send_batch):
     assert ran_send_batch.pm_root.join('topmed/phase3/tmsol/01/24a').isdir()
-
-
-def test_batch_files_copied(ran_send_batch):
-    raw_path = ran_send_batch.batch_path/'TMSOL_batch24am.tsv'
-    cram_path = ran_send_batch.batch_path/'TMSOL_batch24a_cram.tsv'
-    cmp(ran_send_batch.raw_worklist_path, raw_path)
-    cmp(ran_send_batch.generated_worklist_path, cram_path)
 
 
 def test_batch_symlink(ran_send_batch):
@@ -50,18 +48,87 @@ def test_batch_symlink(ran_send_batch):
     assert link_path.readlink() == expected_link
 
 
+def test_meta_yaml(ran_send_batch, yesterday_and_today):
+    """Expect:
+        batch_title: TOPMed_TMSOL_batch24a
+        input: TMSOL_batch24a_cram.tsv
+        batch_date: 2018-01-24 (whatever today's date is)
+        file_formats:
+            - CRAM
+        num_records: 10
+        file_sizes: 0-0G
+        attempt: a
+        funding_source: TOPMED_phase3_123456
+        project_code: proj-dm0019
+    """
+    meta_path = ran_send_batch.batch_path/'meta.yaml'
+    assert meta_path.isfile()
+    with open(meta_path) as fin:
+        meta_dict = yaml.load(fin)
+    meta = Generic()
+    meta.__dict__.update(meta_dict)
+    assert meta.input == 'TMSOL_batch24a_cram.tsv'
+    d = yesterday_and_today.d
+    assert d.yesterday <= meta.batch_date <= d.today
+    assert meta.file_formats == ['CRAM']
+    assert meta.num_records == 10
+    assert meta.file_sizes == '0-0G'
+    assert meta.attempt == 'a'
+    assert meta.funding_source == 'TOPMED_phase3_123456'
+    assert meta.project_code == 'proj-dm0019'
+    assert meta.batch_title == 'TOPMed_TMSOL_batch24a'
+
+
+def test_no_error(ran_send_batch):
+    stderr.write(ran_send_batch.stderr)
+    assert not ran_send_batch.stderr
+
+
+def test_output(ran_send_batch, yesterday_and_today):
+    with open('tests/resources/send_batch_output.txt') as fin:
+        template = fin.read()
+    s = yesterday_and_today.s
+    expect_y = template.format(pm_root=ran_send_batch.pm_root,
+                               today=s.yesterday)
+    expect_t = template.format(pm_root=ran_send_batch.pm_root,
+                               today=s.today)
+    stdout = ran_send_batch.stdout
+    print(repr(stdout))
+    print('===============')
+    print(repr(expect_t))
+    assert (stdout == expect_t) or (stdout == expect_y)
+
+
+@fixture(scope='module')
+def yesterday_and_today():
+    """Prode `date` (d) and `str` (s) versions of yesterday and today."""
+    d = Generic()
+    d.today = date.today()
+    d.yesterday = d.today - timedelta(1)
+    s = Generic()
+    s.today = d.today.isoformat()
+    s.yesterday = d.yesterday.isoformat()
+    result = Generic()
+    result.d = d
+    result.s = s
+    return result
+
+
+class Generic:
+    """Just to wrap a dict"""
+
+
 @fixture(scope='module')
 def ran_send_batch(send_batch_fixture):
     args = [executable,
-            'send_batch.py',
-            'topmed', 'phase3', 'tmsol', '01', '24a',
-            'tests/resources/TMSOL_batch24am.tsv',
-            send_batch_fixture.root_dir/'TMSOL_batch24a_cram.tsv']
+            local('send_batch.py'),
+            send_batch_fixture.batch_path/'TMSOL_batch24a_cram.tsv']
     cp = run(args, stdin=DEVNULL, stdout=PIPE, stderr=PIPE, encoding='ascii',
-             env=dict(SHEPHERD_CONFIG_FILE=send_batch_fixture.config_file))
+             env=dict(SHEPHERD_CONFIG_FILE=send_batch_fixture.config_file),
+             cwd=send_batch_fixture.batch_path)
     send_batch_fixture.stdout = cp.stdout
     send_batch_fixture.stderr = cp.stderr
-    assert cp.returncode == 0
+    send_batch_fixture.returncode = cp.returncode
     return send_batch_fixture
 
 
@@ -78,7 +145,7 @@ class SendBatchFixture:
         self.sub_root = self.root_dir.ensure_dir('sub_root')
         group_path = self.pm_root/'topmed/phase3/tmsol/01'
         group_path.ensure_dir()
-        self.batch_path = group_path/'24a'
+        self.batch_path = group_path.ensure_dir('24a')
         self.sub_batch_path = self.sub_root/'topmed/phase3/tmsol/01/24a'
         self.sub_batch_path.ensure_dir()
         # Main config file
@@ -93,19 +160,17 @@ class SendBatchFixture:
         defaults_yaml_src.copy(defaults_yaml_path)
         # Input TSV
         self.raw_worklist_path = local('tests/resources/TMSOL_batch24am.tsv')
-        self.generated_worklist_path = generate_worklist(self.root_dir)
+        self.generated_worklist_path = generate_worklist(self.batch_path)
         # Symlink between pm_root and sub_root
         self.pm_root.join('sub').mksymlinkto('../sub_root')
 
 
 def generate_worklist(dest_dir):
     with open('tests/resources/TMSOL_batch24am_cram.tsv') as fin:
-        template_str = fin.read()
-    template = jinja2.Template(template_str)
+        template = fin.read()
     dest_path = dest_dir.join('TMSOL_batch24a_cram.tsv')
     with dest_path.open('w', 'ascii') as fout:
         fout.write(
-            template.render(crams=path.abspath('tests/resources/crams'))
+            template.format(crams=path.abspath('tests/resources/crams'))
         )
-        fout.write('\n')
     return dest_path

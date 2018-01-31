@@ -1,0 +1,17 @@
+10 records
+0-0G
+
+WORKLIST for TMSOL_batch24a_cram.tsv
+
+{pm_root}/topmed/phase3/tmsol/01/24a
+
+attempt: a
+batch_date: {today}
+batch_title: TOPMed_TMSOL_batch24a
+file_formats:
+- CRAM
+file_sizes: 0-0G
+funding_source: TOPMED_phase3_123456
+input: TMSOL_batch24a_cram.tsv
+num_records: 10
+project_code: proj-dm0019

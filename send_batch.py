@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -10,16 +10,11 @@ import datetime
 from config import get_config
 
 
-config = get_config()
-pm_root = config.pm_root
+# Parse the last 5 directories in the absolute path.
+here = Path().absolute()
+project_name, phase, subproject_name, batch_group, batch_name = here.parts[-5:]
 
-project_name = sys.argv[1]
-phase = sys.argv[2]
-subproject_name = sys.argv[3]
-batch_group = sys.argv[4]
-batch_name = sys.argv[5]
-jw_input_file = sys.argv[6]
-batch_input_file = sys.argv[7]
+batch_input_file = sys.argv[1]
 
 sizes = []
 
@@ -35,52 +30,46 @@ with open(batch_input_file) as f:
         gb_min_size = round(min_size/2**30)
         max_size = max(sizes)
         gb_max_size = round(max_size / 2**30)
-        size_range = str(gb_min_size) + '-' + str(gb_max_size)
+        size_range = str(gb_min_size) + '-' + str(gb_max_size) + 'G'
         num_records = len(sizes)
 
-pr = Path(pm_root, project_name)
-ph = phase
-sn = subproject_name
-bg = batch_group
-bn = batch_name
+batch_group_path = here.parent
 
-batch_group_path = pr/ph/sn/bg
 with open(batch_group_path/'defaults.yaml') as f:
     d = yaml.load(f)
 funding = d['funding_source']
 project_code = d['project_code']
 
-batch_path = (pr/ph/sn/bg/bn)
-batch_path.mkdir(exist_ok=True, parents=True)
-
-shutil.copy(batch_input_file, batch_path)
-shutil.copy(jw_input_file, batch_path)
-
-sub_path = batch_path/'sub'
+sub_path = here/'sub'
 sub_path.symlink_to(
-    '../../../../../sub/{}/{}/{}/{}/{}'.format(project_name, ph, sn, bg, bn)
+    '../../../../../sub/{}/{}/{}/{}/{}'.format(
+        *(here.parts[-5:])
+    )
 )
 
-d = dict(input_file=batch_input_file,
+d = dict(input=os.path.basename(batch_input_file),
          num_records=num_records,
          file_sizes=size_range,
          funding_source = funding,
          project_code = project_code,
          batch_date = datetime.date.today(),
          attempt = batch_name[-1],
-         file_formats = extension.upper(),
-         batch_title = 'TOPmed_' + subproject_name.upper()
+         file_formats = [extension.upper()],
+         batch_title = 'TOPMed_' + subproject_name.upper()
          + '_batch' + batch_name)
+# TODO: Hardcoded "TOPMed" into batch_title.
 
-with open('meta.yaml','w') as fout:
+meta_path = here/'meta.yaml'
+with open(meta_path, 'w') as fout:
     yaml.dump(d, fout, default_flow_style=False)
 
-print('Summary stats:')
+print(num_records, 'records')
+print(size_range)
 print()
-print('Worklist for ' + batch_input_file)
+print('WORKLIST for ' + os.path.basename(batch_input_file))
 print()
-print(os.path.abspath(batch_path))
+print(os.path.abspath(here))
 print()
-with open('meta.yaml', 'r') as f:
+with open(meta_path) as f:
     text = f.read()
-    print(text)
+    sys.stdout.write(text)
