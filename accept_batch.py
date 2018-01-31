@@ -2,7 +2,7 @@ from pathlib import Path
 import argparse
 import logging
 import os
-#import sh
+import subprocess
 import sys
 import yaml
 """
@@ -11,7 +11,7 @@ need to run in prod, since will call aspera
 """
 sub_base = Path('/stornext/snfs1/submissions/topmed')
 asp_base = Path('/aspera/share/globusupload/submissions/test')
-aspd_base="christis@hgsc-aspera1.hgsc.bcm.edu:/share/share/globusupload/submissions"
+aspd_base="christis@hgsc-aspera1.hgsc.bcm.edu:/share/share/globusupload/submissions/test"
 g_base = Path('/groups/submissions/metadata/v1')
 input_path= Path(sys.argv[1])
 dest_path = Path(g_base, *input_path.parts[-5:])
@@ -68,7 +68,8 @@ def check_or_make(path):
 def aspera_path(path):
     #christis@hgsc-aspera1.hgsc.bcm.edu:/share/share/globusupload/submissions/$batch_type/$batch_name/
     cmd="mkdir -p "+aspd_base +"/"+sub_proj+"/"+batch_name
-    os.system(cmd)
+    process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+    output, error = process.communicate()
 
 def make_paths(input_p):
     md5_g = Path(input_p,"md5")
@@ -99,4 +100,4 @@ find_tsv(input_path)
 logging.info("PROJECT CODE: %s" % (project_code))
 logging.info("FILE NAME: %s" % (meta_path.name))
 #logging.info('TSV NAME: %S' % (find_tsv(input_path))) 
-#aspera_path(input_path)
+aspera_path(input_path)
