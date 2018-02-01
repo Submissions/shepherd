@@ -27,8 +27,7 @@ def test_can_run_accept_batch(ran_accept_batch):
 @fixture(scope='module')
 def ran_accept_batch(accept_batch_fixture):
     args = [executable, 'accept_batch.py', 'tests/resources/']
-    cp = run(args, stdin=DEVNULL, stdout=PIPE, stderr=PIPE, encoding='ascii'),
-             env=dict(SHEPHERD_CONFIG_FILE=accept_batch_fixture.config_file))
+    cp = run(args, stdin=DEVNULL, stdout=PIPE, stderr=PIPE, encoding='ascii', env=dict(SHEPHERD_CONFIG_FILE=accept_batch_fixture.config_file))
     accept_batch_fixture.stdout = cp.stdout
     accept_batch_fixture.stderr = cp.stderr
     assert cp.returncode == 0
@@ -45,7 +44,7 @@ class AcceptBatchFixture:
         self.root_dir = tmpdir_factory.mktemp('accept_batch')
         self.pm_root = self.root_dir.join('pm_root')
         self.sub_root = self.root_dir.join('sub_root')
-        group_path = self.pm_root/'topmed/phase3/tmsol/01'
+        group_path = self.pm_root/'tests/resources/'
         group_path.ensure_dir()
         self.batch_path = group_path/'24a'
         self.sub_batch_path = self.sub_root/'topmed/phase3/tmsol/01/24a'
