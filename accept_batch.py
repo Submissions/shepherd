@@ -19,7 +19,7 @@ need to run in prod, since will call aspera
 sub_base = Path('/stornext/snfs1/submissions/topmed')
 asp_base = Path('/aspera/share/globusupload/submissions/test')
 aspd_base="christis@hgsc-aspera1.hgsc.bcm.edu:/share/share/globusupload/submissions/test"
-g_base = Path('/groups/submissions/metadata/v1')
+g_base = Path(sub_root)
 input_path= Path(sys.argv[1])
 dest_path = Path(g_base, *input_path.parts[-5:])
 input_path.glob('meta.{yaml,yml,txt}')
