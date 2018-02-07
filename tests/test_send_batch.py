@@ -36,7 +36,7 @@ def test_pm_root_created(ran_send_batch):
 
 
 def test_batch_dir_created(ran_send_batch):
-    assert ran_send_batch.pm_root.join('topmed/phase3/tmsol/01/24a').isdir()
+    assert ran_send_batch.pm_root.join('topmed/phase3/biome/01/24a').isdir()
 
 
 def test_batch_symlink(ran_send_batch):
@@ -44,14 +44,14 @@ def test_batch_symlink(ran_send_batch):
     assert link_path.islink()
     assert link_path.isdir()
     assert link_path.realpath() == ran_send_batch.sub_batch_path
-    expected_link = '../../../../../sub/topmed/phase3/tmsol/01/24a'
+    expected_link = '../../../../../sub/topmed/phase3/biome/01/24a'
     assert link_path.readlink() == expected_link
 
 
 def test_meta_yaml(ran_send_batch, yesterday_and_today):
     """Expect:
-        batch_title: TOPMed_TMSOL_batch24a
-        input: TMSOL_batch24a_cram.tsv
+        batch_title: TOPMed_BioMe_batch24a
+        input: BioMe_batch24a_mplx.tsv
         batch_date: 2018-01-24 (whatever today's date is)
         file_formats:
             - CRAM
@@ -67,16 +67,16 @@ def test_meta_yaml(ran_send_batch, yesterday_and_today):
         meta_dict = yaml.load(fin)
     meta = Generic()
     meta.__dict__.update(meta_dict)
-    assert meta.input == 'TMSOL_batch24a_cram.tsv'
+    assert meta.input == 'BioMe_batch24a_mplx.tsv'
     d = yesterday_and_today.d
     assert d.yesterday <= meta.batch_date <= d.today
     assert meta.file_formats == ['CRAM']
     assert meta.num_records == 10
     assert meta.file_sizes == '0-0G'
     assert meta.attempt == 'a'
-    assert meta.funding_source == 'TOPMED_phase3_123456'
+    assert meta.funding_source == 'TOPMed Phase III_1355'
     assert meta.project_code == 'proj-dm0019'
-    assert meta.batch_title == 'TOPMed_TMSOL_batch24a'
+    assert meta.batch_title == 'TOPMed_BioMe_batch24a'
 
 
 def test_no_error(ran_send_batch):
@@ -122,7 +122,7 @@ class Generic:
 def ran_send_batch(send_batch_fixture):
     args = [executable,
             local('send_batch.py'),
-            send_batch_fixture.batch_path/'TMSOL_batch24a_cram.tsv']
+            send_batch_fixture.batch_path/'BioMe_batch24a_mplx.tsv']
     cp = run(args, stdin=DEVNULL, stdout=PIPE, stderr=PIPE, encoding='ascii',
              env=dict(SHEPHERD_CONFIG_FILE=send_batch_fixture.config_file),
              cwd=send_batch_fixture.batch_path)
@@ -140,13 +140,15 @@ def send_batch_fixture(tmpdir_factory):
 class SendBatchFixture:
     def __init__(self, tmpdir_factory):
         # Main directories
+        self.resources_path = local('tests/resources')
         self.root_dir = tmpdir_factory.mktemp('send_batch')
         self.pm_root = self.root_dir.ensure_dir('pm_root')
         self.sub_root = self.root_dir.ensure_dir('sub_root')
-        group_path = self.pm_root/'topmed/phase3/tmsol/01'
-        group_path.ensure_dir()
+        phase3_path = self.pm_root/'topmed/phase3'
+        biome_path = phase3_path/'biome'
+        group_path = phase3_path/'biome/01'
         self.batch_path = group_path.ensure_dir('24a')
-        self.sub_batch_path = self.sub_root/'topmed/phase3/tmsol/01/24a'
+        self.sub_batch_path = self.sub_root/'topmed/phase3/biome/01/24a'
         self.sub_batch_path.ensure_dir()
         # Main config file
         self.config_file = self.root_dir.join('config.yaml')
@@ -155,20 +157,23 @@ class SendBatchFixture:
             yaml.dump(config, default_flow_style=False), 'ascii'
         )
         # defaults.yaml
-        defaults_yaml_path = group_path/'defaults.yaml'
-        defaults_yaml_src = local('tests/resources/defaults.yaml')
-        defaults_yaml_src.copy(defaults_yaml_path)
+        self.copy_resource('defaults_phase3.yaml', phase3_path/'defaults.yaml')
+        self.copy_resource('defaults_biome.yaml', biome_path/'defaults.yaml')
         # Input TSV
-        self.raw_worklist_path = local('tests/resources/TMSOL_batch24am.tsv')
+        self.raw_worklist_path = self.resources_path/'BioMe_batch24am.tsv'
         self.generated_worklist_path = generate_worklist(self.batch_path)
         # Symlink between pm_root and sub_root
         self.pm_root.join('sub').mksymlinkto('../sub_root')
 
+    def copy_resource(self, src_str, dst_path):
+        src_path = self.resources_path / src_str
+        src_path.copy(dst_path)
+
 
 def generate_worklist(dest_dir):
-    with open('tests/resources/TMSOL_batch24am_cram.tsv') as fin:
+    with open('tests/resources/BioMe_batch24am_mplx.tsv') as fin:
         template = fin.read()
-    dest_path = dest_dir.join('TMSOL_batch24a_cram.tsv')
+    dest_path = dest_dir.join('BioMe_batch24a_mplx.tsv')
     with dest_path.open('w', 'ascii') as fout:
         fout.write(
             template.format(crams=path.abspath('tests/resources/crams'))

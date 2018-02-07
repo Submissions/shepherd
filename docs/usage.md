@@ -6,6 +6,7 @@ Customer:
 Effects:
 
 * Reads:
+  - defaults.yaml in parent directories
   - CARDIA_batch17a_globus.tsv
   - /groups/project-managers/tech/metadata/v1/topmed/phase3/cardia/01/defaults.yaml
 * Fetches sizes of all CRAM files.

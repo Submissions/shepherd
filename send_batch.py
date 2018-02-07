@@ -33,12 +33,20 @@ with open(batch_input_file) as f:
         size_range = str(gb_min_size) + '-' + str(gb_max_size) + 'G'
         num_records = len(sizes)
 
-batch_group_path = here.parent
-
-with open(batch_group_path/'defaults.yaml') as f:
-    d = yaml.load(f)
-funding = d['funding_source']
-project_code = d['project_code']
+# Look for defaults.yaml in each directory starting 4 levels up and then
+# working down to this directory. Accumulate into a dict with child directories
+# supplanting their parents.
+defaults = dict()
+for i in range(4, 0, -1):
+    defaults_yaml_path = here.parents[i] / 'defaults.yaml'
+    if defaults_yaml_path.is_file():
+        with open(defaults_yaml_path) as f:
+            d = yaml.load(f)
+        defaults.update(d)
+project_name = defaults['project_name']
+subproject_name = defaults['subproject_name']
+funding = defaults['funding_source']
+project_code = defaults['project_code']
 
 sub_path = here/'sub'
 sub_path.symlink_to(
@@ -55,7 +63,7 @@ d = dict(input=os.path.basename(batch_input_file),
          batch_date = datetime.date.today(),
          attempt = batch_name[-1],
          file_formats = [extension.upper()],
-         batch_title = 'TOPMed_' + subproject_name.upper()
+         batch_title = project_name + '_'+ subproject_name
          + '_batch' + batch_name)
 # TODO: Hardcoded "TOPMed" into batch_title.
 
