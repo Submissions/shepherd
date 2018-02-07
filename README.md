@@ -15,11 +15,21 @@ Example:
     cd /groups/project-managers/topmed/phase3/cardia/01/17a
     send_batch CARDIA_batch17a_globus.tsv
 
+Required:
+
+* combined `defaults.yaml`:
+  - project_name
+  - subproject_name
+  - funding_source
+  - project_code
+* header of the TSV file:
+  - cram_path
+
 Effects:
 
 * Reads:
+  - `defaults.yaml` in parent directories through `topmed`
   - `CARDIA_batch17a_globus.tsv`
-  - `../defaults.yaml`
 * Fetches sizes of all CRAM files.
 * Creates:
   - `sub` -> `../../../../../sub/v1/topmed/phase3/cardia/01/17a`
