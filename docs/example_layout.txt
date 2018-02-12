@@ -9,19 +9,36 @@ groups
                     meta.yaml
                         version: 1.4
                     topmed
+                        others
+                            defaults.yaml
+                                project_name: TOPMed
+                            afib
+                                defaults.yaml
+                                    subproject_name: AFIB
+                                    funding_source: TOPMED_phase3_67890
+                                    project_code: proj-dm0050
+                                01
+                                    01a
                         phase3
-                            cardia
+                            defaults.yaml
+                                project_name: TOPMed
+                                # Defaults that could be over-ridden below
+                                funding_source: TOPMED_phase3_123456
+                                project_code: proj-dm0019
+                            biome
+                                defaults.yaml
+                                    subproject_name: BioMe
                                 01 (batch group)
-                                    defaults.yaml
+                                    defaults.yaml (optional)
                                         funding_source: TOPMED_phase3_123456
                                         project_code: proj-dm0019
                                     17a (b for second attempt, etc.)
                                         sub -> ../../.../sub/.../17a
-                                        CARDIA_batch17a.tsv
-                                        CARDIA_batch17a_globus.tsv
+                                        BioMe_batch17a.tsv
+                                        BioMe_batch17a_globus.tsv
                                         meta.yaml
-                                            batch_title: TOPMed_CARDIA_batch17a
-                                            input: CARDIA_batch17a_globus.tsv
+                                            batch_title: TOPMed_BioMe_batch17a
+                                            input: BioMe_batch17a_globus.tsv
                                             external: (may leave out)
                                             batch_date: 2017-12-05
                                             file_formats: (usually just one)
@@ -38,7 +55,7 @@ groups
             v1
                 topmed
                     phase3
-                        cardia
+                        biome
                             01
                                 17a (to store state, checksums, and validations)
                                     md5

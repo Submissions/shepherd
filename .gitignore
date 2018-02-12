@@ -103,3 +103,4 @@ ENV/
 # project-specific items
 /md5
 /validation
+/.pytest_cache
