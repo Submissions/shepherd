@@ -38,7 +38,7 @@ meta.__dict__.update(meta_doc)
 
 def find_tsv(input_p):
     spreadsheet_hits= list(input_p.glob('*.tsv'))
-    assert len(spreadsheet_hits) == 1,"There are too many meta hits"
+    assert len(spreadsheet_hits) == 1, "There is no single unique TSV hit"
     spreadsheet_path=spreadsheet_hits[0]
     sname = spreadsheet_path.name
     logging.info('TSV file: %s' % (sname))
