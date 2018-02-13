@@ -12,6 +12,7 @@ from config import get_config
 config = get_config()
 sub_root = config.sub_root
 asp_root = config.asp_root
+
 """
 Arguement will be path where meta file is found
 need to run in prod, since will call aspera

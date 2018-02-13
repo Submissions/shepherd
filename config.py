@@ -17,8 +17,7 @@ def get_config(config_path=None):
         config_yaml_path = config_path
     elif SHEPHERD_CONFIG_FILE in os.environ:
         config_yaml_path = os.environ[SHEPHERD_CONFIG_FILE]
-        print(config_yaml_path)
-    else:
+      else:
         config_yaml_path = DEFAULT_CONFIG_FILE
     config = Config(config_yaml_path)
     return config
