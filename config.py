@@ -8,7 +8,7 @@ import yaml
 
 DEFAULT_CONFIG_FILE = '~/config/shepherd.yaml'
 SHEPHERD_CONFIG_FILE = 'SHEPHERD_CONFIG_FILE'
-REQUIRED_CONFIG_KEYS = 'pm_root sub_root'.split()
+REQUIRED_CONFIG_KEYS = 'asp_root sub_root'.split()
 
 
 def get_config(config_path=None):

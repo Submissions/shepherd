@@ -97,6 +97,10 @@ ENV/
 # mkdocs documentation
 /site
 
+
+#note
+christian_notes
+
 # mypy
 .mypy_cache/
 
@@ -106,3 +110,8 @@ ENV/
 md5
 validation
 /.pytest_cache
+
+
+
+
+
