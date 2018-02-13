@@ -20,9 +20,14 @@ def test_fixture(accept_batch_fixture):
     assert 'sub_root' in config
 
 
-@mark.xfail(run=False)
 def test_can_run_accept_batch(ran_accept_batch):
     pass
+
+
+def test_exit_0(ran_accept_batch):
+    stdout.write(ran_accept_batch.stdout)
+    stderr.write(ran_accept_batch.stderr)
+    assert ran_accept_batch.returncode == 0
 
 
 @fixture(scope='module')
@@ -32,7 +37,7 @@ def ran_accept_batch(accept_batch_fixture):
              env=dict(SHEPHERD_CONFIG_FILE=accept_batch_fixture.config_file))
     accept_batch_fixture.stdout = cp.stdout
     accept_batch_fixture.stderr = cp.stderr
-    assert cp.returncode == 0
+    accept_batch_fixture.returncode = cp.returncode
     return accept_batch_fixture
 
 
