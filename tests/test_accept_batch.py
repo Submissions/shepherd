@@ -16,7 +16,6 @@ def test_fixture(accept_batch_fixture):
     print()
     for k in sorted(config):
         print(k, config[k])
-    assert 'pm_root' in config
     assert 'sub_root' in config
 
 
@@ -49,20 +48,12 @@ def accept_batch_fixture(tmpdir_factory):
 class AcceptBatchFixture:
     def __init__(self, tmpdir_factory):
         self.root_dir = tmpdir_factory.mktemp('accept_batch')
-        self.pm_root = self.root_dir.join('pm_root')
-        self.sub_root = self.root_dir.join('sub_root')
-        group_path = self.pm_root/'tests/resources/'
-        group_path.ensure_dir()
-        self.batch_path = group_path/'24a'
-        self.sub_batch_path = self.sub_root/'topmed/phase3/tmsol/01/24a'
-        self.sub_batch_path.ensure_dir()
+        self.sub_root = self.root_dir.ensure_dir('sub_root')
         # Main config file
         self.config_file = self.root_dir.join('config.yaml')
-        config = dict(pm_root=str(self.pm_root), sub_root=str(self.sub_root))
+        config = dict(sub_root=str(self.sub_root))
         self.config_file.write_text(
             yaml.dump(config, default_flow_style=False), 'ascii')
-        # send_meta.yaml
-        send_meta_yaml_path = group_path/'send_meta.yaml'
-        send_meta_yaml_src = local('tests/resources/send_meta.yaml')
-        send_meta_yaml_src.copy(send_meta_yaml_path)
+        meta_yaml_src = local('tests/resources/meta.yaml')
+        # meta_yaml_src.copy(meta_yaml_dst)
         # Aspera path
