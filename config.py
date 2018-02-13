@@ -6,7 +6,7 @@ import os
 import yaml
 
 
-DEFAULT_CONFIG_FILE = '~/config/shepherd.yaml'
+DEFAULT_CONFIG_FILE = '~/.config/shepherd.yaml'
 SHEPHERD_CONFIG_FILE = 'SHEPHERD_CONFIG_FILE'
 REQUIRED_CONFIG_KEYS = 'asp_root sub_root'.split()
 
@@ -17,6 +17,7 @@ def get_config(config_path=None):
         config_yaml_path = config_path
     elif SHEPHERD_CONFIG_FILE in os.environ:
         config_yaml_path = os.environ[SHEPHERD_CONFIG_FILE]
+        print(config_yaml_path)
     else:
         config_yaml_path = DEFAULT_CONFIG_FILE
     config = Config(config_yaml_path)

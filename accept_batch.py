@@ -11,17 +11,17 @@ from config import get_config
 
 config = get_config()
 sub_root = config.sub_root
-
+asp_root = config.asp_root
 """
 Arguement will be path where meta file is found
 need to run in prod, since will call aspera
 """
-sub_base = Path('/stornext/snfs1/submissions/topmed')
-asp_base = Path('/aspera/share/globusupload/submissions/test')
-aspd_base="christis@hgsc-aspera1.hgsc.bcm.edu:/share/share/globusupload/submissions/test"
+#sub_base = Path('/stornext/snfs1/submissions/topmed')
+#sub base will be defined in config now
 g_base = Path(sub_root)
 input_path= Path(sys.argv[1])
 dest_path = Path(g_base, *input_path.parts[-5:])
+
 input_path.glob('meta.{yaml,yml,txt}')
 meta_hits = list(input_path.glob('meta.*'))
 assert len(meta_hits) == 1,"There are too many meta hits"
@@ -36,13 +36,16 @@ class Generic:
 meta = Generic()
 meta.__dict__.update(meta_doc)
 
-def find_tsv(input_p):
+def print_tsv(input_p):
     spreadsheet_hits= list(input_p.glob('*.tsv'))
     assert len(spreadsheet_hits) == 1, "There is no single unique TSV hit"
     spreadsheet_path=spreadsheet_hits[0]
     sname = spreadsheet_path.name
-    logging.info('TSV file: %s' % (sname))
-
+    
+    if input_file == sname:
+        logging.info('TSV file: %s' % (sname))
+    else:
+        logging.warning('TSV file name in meta and in path do not match')                           
 def is_cram(meta):
     "This bad boy ensures file format is just cram"
     ft = meta.file_formats[0]
@@ -83,16 +86,20 @@ def make_paths(input_p):
     check_or_make(md5_g)
     val_g = Path(input_p,"validation")
     check_or_make(val_g)
-    md5_s = Path(sub_base,"md5-batches",batch_name)
-    val_s = Path(sub_base,"validation-batches",batch_name)
+    md5_s = Path(sub_root,"md5-batches",batch_name)
+    val_s = Path(sub_root,"validation-batches",batch_name)
     check_or_make(md5_s)
     check_or_make(val_s)
+    aspera_root = Path(asp_root,sub_proj,batch_name)
+    check_or_make(aspera_root)
+
 
 batch_name = meta.batch_title[7:]
 batch_num = meta.batch_title[-3:-1]
 sub_proj = meta.batch_title[7:-9]
 project_code = meta.project_code
 samp_num = meta.num_records
+input_file = meta.input
 
 if is_cram(meta) == True:
     #logging.info("This is a cram")
@@ -100,9 +107,9 @@ if is_cram(meta) == True:
 else:
     logging.error("!!Not a Cram!!!")
 
-find_tsv(input_path)
 
+print_tsv(input_path)
 logging.info("PROJECT CODE: %s" % (project_code))
 logging.info("FILE NAME: %s" % (meta_path.name))
-#logging.info('TSV NAME: %S' % (find_tsv(input_path))) 
-aspera_path(input_path)
+
+
