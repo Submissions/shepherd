@@ -55,6 +55,7 @@ sub_path.symlink_to(
     )
 )
 
+batch_title = project_name + '_' + subproject_name + '_batch' + batch_name
 d = dict(input=os.path.basename(batch_input_file),
          num_records=num_records,
          file_sizes=size_range,
@@ -63,8 +64,7 @@ d = dict(input=os.path.basename(batch_input_file),
          batch_date = datetime.date.today(),
          attempt = batch_name[-1],
          file_formats = [extension.upper()],
-         batch_title = project_name + '_'+ subproject_name
-         + '_batch' + batch_name)
+         batch_title = batch_title)
 # TODO: Hardcoded "TOPMed" into batch_title.
 
 meta_path = here/'meta.yaml'
@@ -74,7 +74,7 @@ with open(meta_path, 'w') as fout:
 print(num_records, 'records')
 print(size_range)
 print()
-print('WORKLIST for ' + os.path.basename(batch_input_file))
+print('WORKLIST for', batch_title)
 print()
 print(os.path.abspath(here))
 print()

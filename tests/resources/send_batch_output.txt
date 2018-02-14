@@ -1,7 +1,7 @@
 10 records
 0-0G
 
-WORKLIST for BioMe_batch24a_mplx.tsv
+WORKLIST for TOPMed_BioMe_batch24a
 
 {pm_root}/topmed/phase3/biome/01/24a
 
