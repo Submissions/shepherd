@@ -9,6 +9,10 @@ from pytest import fixture
 import yaml
 
 
+# Note that pm_root is not coming from config. It is a test-only concept,
+# representing the directory that contains the `sub` symlink and and the
+# top-level project directory.
+
 def test_fixture(send_batch_fixture):
     for k in sorted(vars(send_batch_fixture)):
         print(k, getattr(send_batch_fixture, k))
@@ -17,8 +21,10 @@ def test_fixture(send_batch_fixture):
     print()
     for k in sorted(config):
         print(k, config[k])
-    assert 'pm_root' in config
     assert 'sub_root' in config
+    send_batch_fixture.sub_root.isdir()
+    pm_root = send_batch_fixture.pm_root
+    assert pm_root.join('topmed/phase3/biome/01/24a').isdir()
 
 
 def test_can_run_send_batch(ran_send_batch):
@@ -29,14 +35,6 @@ def test_send_batch_returned_0(ran_send_batch):
     stderr.write(ran_send_batch.stderr)
     stdout.write(ran_send_batch.stdout)
     assert ran_send_batch.returncode == 0
-
-
-def test_pm_root_created(ran_send_batch):
-    assert ran_send_batch.pm_root.isdir()
-
-
-def test_batch_dir_created(ran_send_batch):
-    assert ran_send_batch.pm_root.join('topmed/phase3/biome/01/24a').isdir()
 
 
 def test_batch_symlink(ran_send_batch):
@@ -152,7 +150,7 @@ class SendBatchFixture:
         self.sub_batch_path.ensure_dir()
         # Main config file
         self.config_file = self.root_dir.join('config.yaml')
-        config = dict(pm_root=str(self.pm_root), sub_root=str(self.sub_root))
+        config = dict(asp_root=None, sub_root=str(self.sub_root))
         self.config_file.write_text(
             yaml.dump(config, default_flow_style=False), 'ascii'
         )
