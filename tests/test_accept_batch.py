@@ -16,6 +16,7 @@ def test_fixture(accept_batch_fixture):
     print()
     for k in sorted(config):
         print(k, config[k])
+    assert 'asp_root' in config
     assert 'sub_root' in config
 
 
@@ -49,10 +50,11 @@ def accept_batch_fixture(tmpdir_factory):
 class AcceptBatchFixture:
     def __init__(self, tmpdir_factory):
         self.root_dir = tmpdir_factory.mktemp('accept_batch')
+        self.asp_root = self.root_dir.ensure_dir('asp_root')
         self.sub_root = self.root_dir.ensure_dir('sub_root')
         # Main config file
         self.config_file = self.root_dir.join('config.yaml')
-        config = dict(sub_root=str(self.sub_root))
+        config = dict(asp_root=str(self.asp_root), sub_root=str(self.sub_root))
         self.config_file.write_text(
             yaml.dump(config, default_flow_style=False), 'ascii')
         meta_yaml_src = local('tests/resources/meta.yaml')
