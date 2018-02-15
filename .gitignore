@@ -101,6 +101,8 @@ ENV/
 .mypy_cache/
 
 # project-specific items
-/md5
-/validation
+*~
+# TODO: Fix accept_batch, so we can remove the md5 and validation lines.
+md5
+validation
 /.pytest_cache

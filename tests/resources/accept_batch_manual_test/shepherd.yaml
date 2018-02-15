@@ -1,0 +1,2 @@
+sub_root: build/manual_test/accept_batch
+asp_root: /aspera/share/globusupload/submissions/test

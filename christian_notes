@@ -1,0 +1,9 @@
+use /groups/submissions/users/christis/shepherd/shepherd/tests/resources/accept_batch_manual_test
+for input of testing code
+
+
+add the required paths in config file...
+
+
+
+SHEPHERD_CONFIG_FILE=/groups/submissions/users/christis/shepherd/shepherd/tests/resources/accept_batch_manual_test/shepherd.yaml python accept_batch.py /groups/submissions/users/christis/shepherd/shepherd/tests/resources/accept_batch_manual_test
