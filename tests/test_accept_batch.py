@@ -35,6 +35,53 @@ def test_exit_0(ran_accept_batch):
     assert ran_accept_batch.returncode == 0
 
 
+@mark.xfail()
+def test_batch_dir(ran_accept_batch):
+    """{temp_dir}/sub_root/topmed/phase3/biome/01/24a"""
+    assert ran_accept_batch.batch_dir.isdir()
+
+
+@mark.xfail()
+def test_md5_dir(ran_accept_batch):
+    """{temp_dir}/sub_root/topmed/phase3/biome/01/24a/md5"""
+    md5_dir = ran_accept_batch.batch_dir / 'md5'
+    assert md5_dir.isdir()
+
+
+@mark.xfail()
+def test_validation_dir(ran_accept_batch):
+    """{temp_dir}/sub_root/topmed/phase3/biome/01/24a/validation"""
+    validation_dir = ran_accept_batch.batch_dir / 'validation'
+    assert validation.isdir()
+
+
+@mark.xfail()
+def test_state_dir(ran_accept_batch):
+    """{temp_dir}/sub_root/topmed/phase3/biome/01/24a/state
+    contents: current.yaml -> 00.yaml"""
+    state_dir = ran_accept_batch.batch_dir / 'state'
+    assert state_dir.isdir()
+    state_file = state_dir / '00.yaml'
+    assert state_file.isfile()
+    assert state_file.read_text('ascii') == ran_accept_batch.state_00_contents
+    current_link = state_dir / current.yaml
+    assert current_link.islink()
+    assert current_link.realpath() == state_file
+
+
+@mark.xfail()
+def test_dest_dir(ran_accept_batch):
+    """{temp_dir}/asp_root/BioMe/BioMe_batch24a
+    contents: meta.yaml containing link to batch_dir"""
+    assert ran_accept_batch.dest_dir.isdir()
+    back_link_file = ran_accept_batch.dest_dir / 'meta.yaml'
+    assert back_link_file.isfile()
+    with open('tests/resources/back_link.yaml') as fin:
+        template = fin.read()
+    expected_contents = template.format(sub_root=ran_accept_batch.sub_root)
+    assert back_link_file.read_text('ascii') == expected_contents
+
+
 @fixture(scope='module')
 def ran_accept_batch(accept_batch_fixture):
     args = [executable, 'accept_batch.py', 'tests/resources/']
@@ -56,11 +103,12 @@ class AcceptBatchFixture:
         self.root_dir = tmpdir_factory.mktemp('accept_batch')
         self.asp_root = self.root_dir.ensure_dir('asp_root')
         self.sub_root = self.root_dir.ensure_dir('sub_root')
+        self.batch_dir = self.sub_root / 'topmed/phase3/biome/01/24a'
+        self.dest_dir = self.asp_root / 'BioMe/BioMe_batch24a'
         # Main config file
         self.config_file = self.root_dir.join('config.yaml')
         config = dict(asp_root=str(self.asp_root), sub_root=str(self.sub_root))
         self.config_file.write_text(
             yaml.dump(config, default_flow_style=False), 'ascii')
-        meta_yaml_src = local('tests/resources/meta.yaml')
-        # meta_yaml_src.copy(meta_yaml_dst)
-        # Aspera path
+        state_00_yaml = local('tests/resources/state_00.yaml')
+        self.state_00_contents = state_00_yaml.read_text('ascii')
