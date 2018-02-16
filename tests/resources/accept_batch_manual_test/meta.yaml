@@ -1,10 +1,1 @@
-batch_title: TOPMed_BioMe_batch24a
-input: BioMe_batch24am_mplx.tsv
-batch_date: 2017-12-20
-file_formats:
-  - CRAM
-attempt: a
-num_records: 10
-file_sizes: 0-0G
-funding_source: bah humbug
-project_code: proj-dm0017
+../meta.yaml
