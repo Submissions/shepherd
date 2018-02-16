@@ -18,6 +18,10 @@ def test_fixture(accept_batch_fixture):
         print(k, config[k])
     assert 'asp_root' in config
     assert 'sub_root' in config
+    assert config['asp_root'] == accept_batch_fixture.asp_root
+    assert config['sub_root'] == accept_batch_fixture.sub_root
+    assert accept_batch_fixture.asp_root.isdir()
+    assert accept_batch_fixture.sub_root.isdir()
 
 
 def test_can_run_accept_batch(ran_accept_batch):
