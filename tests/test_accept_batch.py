@@ -22,6 +22,8 @@ def test_fixture(accept_batch_fixture):
     assert config['sub_root'] == accept_batch_fixture.sub_root
     assert accept_batch_fixture.asp_root.isdir()
     assert accept_batch_fixture.sub_root.isdir()
+    assert accept_batch_fixture.input_batch_dir.isdir()
+    assert (accept_batch_fixture.input_batch_dir / 'meta.yaml').isfile()
 
 
 def test_can_run_accept_batch(ran_accept_batch):
@@ -77,7 +79,9 @@ def test_dest_dir(ran_accept_batch):
 
 @fixture(scope='module')
 def ran_accept_batch(accept_batch_fixture):
-    args = [executable, 'accept_batch.py', 'tests/resources/']
+    args = [executable,
+            'accept_batch.py',
+            'tests/resources/accept_batch/topmed/phase3/biome/01/24a/']
     cp = run(args, stdin=DEVNULL, stdout=PIPE, stderr=PIPE, encoding='ascii',
              env=dict(SHEPHERD_CONFIG_FILE=accept_batch_fixture.config_file))
     accept_batch_fixture.stdout = cp.stdout
@@ -93,9 +97,13 @@ def accept_batch_fixture(tmpdir_factory):
 
 class AcceptBatchFixture:
     def __init__(self, tmpdir_factory):
+        self.resources_path = local('tests/resources')
         self.root_dir = tmpdir_factory.mktemp('accept_batch')
         self.sub_root = self.root_dir.ensure_dir('sub_root')
         self.asp_root = self.root_dir.ensure_dir('asp_root')
+        self.input_batch_dir = (
+            self.resources_path / 'accept_batch/topmed/phase3/biome/01/24a'
+        )
         self.output_batch_dir = self.sub_root / 'topmed/phase3/biome/01/24a'
         self.dest_dir = self.asp_root / 'BioMe/BioMe_batch24a'
         # Main config file
