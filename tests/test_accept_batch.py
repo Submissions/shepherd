@@ -38,20 +38,20 @@ def test_exit_0(ran_accept_batch):
 @mark.xfail()
 def test_batch_dir(ran_accept_batch):
     """{temp_dir}/sub_root/topmed/phase3/biome/01/24a"""
-    assert ran_accept_batch.batch_dir.isdir()
+    assert ran_accept_batch.output_batch_dir.isdir()
 
 
 @mark.xfail()
 def test_md5_dir(ran_accept_batch):
     """{temp_dir}/sub_root/topmed/phase3/biome/01/24a/md5"""
-    md5_dir = ran_accept_batch.batch_dir / 'md5'
+    md5_dir = ran_accept_batch.output_batch_dir / 'md5'
     assert md5_dir.isdir()
 
 
 @mark.xfail()
 def test_validation_dir(ran_accept_batch):
     """{temp_dir}/sub_root/topmed/phase3/biome/01/24a/validation"""
-    validation_dir = ran_accept_batch.batch_dir / 'validation'
+    validation_dir = ran_accept_batch.output_batch_dir / 'validation'
     assert validation.isdir()
 
 
@@ -59,7 +59,7 @@ def test_validation_dir(ran_accept_batch):
 def test_state_dir(ran_accept_batch):
     """{temp_dir}/sub_root/topmed/phase3/biome/01/24a/state
     contents: current.yaml -> 00.yaml"""
-    state_dir = ran_accept_batch.batch_dir / 'state'
+    state_dir = ran_accept_batch.output_batch_dir / 'state'
     assert state_dir.isdir()
     state_file = state_dir / '00.yaml'
     assert state_file.isfile()
@@ -96,7 +96,7 @@ class AcceptBatchFixture:
         self.root_dir = tmpdir_factory.mktemp('accept_batch')
         self.asp_root = self.root_dir.ensure_dir('asp_root')
         self.sub_root = self.root_dir.ensure_dir('sub_root')
-        self.batch_dir = self.sub_root / 'topmed/phase3/biome/01/24a'
+        self.output_batch_dir = self.sub_root / 'topmed/phase3/biome/01/24a'
         self.dest_dir = self.asp_root / 'BioMe/BioMe_batch24a'
         # Main config file
         self.config_file = self.root_dir.join('config.yaml')
