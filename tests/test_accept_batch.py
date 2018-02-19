@@ -62,7 +62,7 @@ def test_state_dir(ran_accept_batch):
     state_file = state_dir / '00.yaml'
     assert state_file.isfile()
     assert state_file.read_text('ascii') == ran_accept_batch.state_00_contents
-    current_link = state_dir / current.yaml
+    current_link = state_dir / 'current.yaml'
     assert current_link.islink()
     assert current_link.realpath() == state_file
 
