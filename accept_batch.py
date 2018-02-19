@@ -71,10 +71,8 @@ def write_yaml(path):
 def check_or_make(path):
     if path.exists():
         logging.warning("%s exist" % (path)) 
-        write_yaml(path)
     else:
         path.mkdir(parents=True)
-        write_yaml(path)
 
 def aspera_path(input_p):
     cmd="scp -r "+ "meta.yaml" +" "+ aspd_base+"/"+batch_name+"/"
