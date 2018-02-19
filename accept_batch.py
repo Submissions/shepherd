@@ -79,15 +79,13 @@ def aspera_path(input_p):
     output, error = process.communicate()
     print (cmd)
 
-def make_paths(input_p):
-    md5_g = Path(input_p,"md5")
-    check_or_make(md5_g)
-    val_g = Path(input_p,"validation")
-    check_or_make(val_g)
-    md5_s = Path(sub_root,"md5-batches",batch_name)
-    val_s = Path(sub_root,"validation-batches",batch_name)
-    check_or_make(md5_s)
-    check_or_make(val_s)
+def make_paths(input_path, dest_path):
+    md5_path = Path(dest_path, 'md5')
+    validation_path = Path(dest_path, 'validation')
+    state_path = Path(dest_path, 'state')
+    check_or_make(md5_path)
+    check_or_make(validation_path)
+    check_or_make(state_path)
     aspera_root = Path(asp_root,sub_proj,batch_name)
     check_or_make(aspera_root)
 
@@ -101,7 +99,7 @@ input_file = meta.input
 
 if is_cram(meta) == True:
     #logging.info("This is a cram")
-    make_paths(input_path)
+    make_paths(input_path, dest_path)
 else:
     logging.error("!!Not a Cram!!!")
 

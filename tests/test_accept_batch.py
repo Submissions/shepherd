@@ -37,20 +37,17 @@ def test_exit_0(ran_accept_batch):
     assert ran_accept_batch.returncode == 0
 
 
-@mark.xfail()
 def test_batch_dir(ran_accept_batch):
     """{temp_dir}/sub_root/topmed/phase3/biome/01/24a"""
     assert ran_accept_batch.output_batch_dir.isdir()
 
 
-@mark.xfail()
 def test_md5_dir(ran_accept_batch):
     """{temp_dir}/sub_root/topmed/phase3/biome/01/24a/md5"""
     md5_dir = ran_accept_batch.output_batch_dir / 'md5'
     assert md5_dir.isdir()
 
 
-@mark.xfail()
 def test_validation_dir(ran_accept_batch):
     """{temp_dir}/sub_root/topmed/phase3/biome/01/24a/validation"""
     validation_dir = ran_accept_batch.output_batch_dir / 'validation'
