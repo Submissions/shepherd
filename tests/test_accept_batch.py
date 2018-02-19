@@ -103,5 +103,6 @@ class AcceptBatchFixture:
         config = dict(asp_root=str(self.asp_root), sub_root=str(self.sub_root))
         self.config_file.write_text(
             yaml.dump(config, default_flow_style=False), 'ascii')
+        # Expected contents state_00.yaml
         state_00_yaml = local('tests/resources/state_00.yaml')
         self.state_00_contents = state_00_yaml.read_text('ascii')
