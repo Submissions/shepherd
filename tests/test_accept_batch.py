@@ -53,16 +53,18 @@ def test_validation_dir(ran_accept_batch):
     assert validation_dir.isdir()
 
 
-@mark.xfail()
 def test_state_dir(ran_accept_batch):
     """{temp_dir}/sub_root/topmed/phase3/biome/01/24a/state
     contents: current.yaml -> 00.yaml"""
     state_dir = ran_accept_batch.output_batch_dir / 'state'
+    print(repr(state_dir))
     assert state_dir.isdir()
     state_file = state_dir / '00.yaml'
+    print(repr(state_file))
     assert state_file.isfile()
     assert state_file.read_text('ascii') == ran_accept_batch.state_00_contents
     current_link = state_dir / 'current.yaml'
+    print(repr(current_link))
     assert current_link.islink()
     assert current_link.realpath() == state_file
 

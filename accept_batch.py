@@ -54,15 +54,15 @@ def is_cram(meta):
 
 def write_yaml(path):
     "This bad boy writes yaml files"
-    meta_p = "meta.yaml"
+    meta_p = "00.yaml"
     file_create= path / meta_p
     with file_create.open("w", encoding ="utf-8") as f:
-        f.write("""state_id: 0 
-      steps_completed: 0 
-      state: 
-        \t copy: initial 
-        \t md5: initial 
-        \t validation: initial \n""")
+        print("""state_id: 0
+steps_completed: 0
+state:
+  copy: initial
+  md5: initial
+  validation: initial""", file=f)
         return
 
 def check_or_make(path):
@@ -84,6 +84,9 @@ def make_paths(input_path, dest_path):
     check_or_make(md5_path)
     check_or_make(validation_path)
     check_or_make(state_path)
+    write_yaml(state_path)
+    link_current_path = state_path / 'current.yaml'
+    link_current_path.symlink_to('00.yaml')
     aspera_root = Path(asp_root,sub_proj,batch_name)
     check_or_make(aspera_root)
 
