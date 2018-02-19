@@ -28,7 +28,6 @@ meta_hits = list(input_path.glob('meta.*'))
 assert len(meta_hits) == 1,"There are too many meta hits"
 meta_path = meta_hits[0]
 meta_doc = yaml.load(meta_path.read_text())
-dest_path = Path(g_base, *input_path.parts[-5:])
 #assert type(name) is StringType, "name is not a string: %r" % name
 
 logging.basicConfig(level=logging.INFO)
