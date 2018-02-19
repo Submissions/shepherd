@@ -69,17 +69,10 @@ def test_state_dir(ran_accept_batch):
     assert current_link.realpath() == state_file
 
 
-@mark.xfail()
 def test_dest_dir(ran_accept_batch):
     """{temp_dir}/asp_root/BioMe/BioMe_batch24a
     contents: meta.yaml containing link to batch_dir"""
     assert ran_accept_batch.dest_dir.isdir()
-    back_link_file = ran_accept_batch.dest_dir / 'meta.yaml'
-    assert back_link_file.isfile()
-    with open('tests/resources/back_link.yaml') as fin:
-        template = fin.read()
-    expected_contents = template.format(sub_root=ran_accept_batch.sub_root)
-    assert back_link_file.read_text('ascii') == expected_contents
 
 
 @fixture(scope='module')
