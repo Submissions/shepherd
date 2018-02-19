@@ -36,10 +36,8 @@ class Generic:
 meta = Generic()
 meta.__dict__.update(meta_doc)
 
-def print_tsv(input_p):
-    spreadsheet_hits= list(input_p.glob('*.tsv'))
-    assert len(spreadsheet_hits) == 1, "There is no single unique TSV hit"
-    spreadsheet_path=spreadsheet_hits[0]
+def print_tsv(tsv_file_path_str):
+    spreadsheet_path=Path(tsv_file_path_str)
     sname = spreadsheet_path.name
     
     if input_file == sname:
@@ -104,7 +102,7 @@ else:
     logging.error("!!Not a Cram!!!")
 
 
-print_tsv(input_path)
+print_tsv(meta.input)
 logging.info("PROJECT CODE: %s" % (project_code))
 logging.info("FILE NAME: %s" % (meta_path.name))
 
