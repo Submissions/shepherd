@@ -94,8 +94,8 @@ def accept_batch_fixture(tmpdir_factory):
 class AcceptBatchFixture:
     def __init__(self, tmpdir_factory):
         self.root_dir = tmpdir_factory.mktemp('accept_batch')
-        self.asp_root = self.root_dir.ensure_dir('asp_root')
         self.sub_root = self.root_dir.ensure_dir('sub_root')
+        self.asp_root = self.root_dir.ensure_dir('asp_root')
         self.output_batch_dir = self.sub_root / 'topmed/phase3/biome/01/24a'
         self.dest_dir = self.asp_root / 'BioMe/BioMe_batch24a'
         # Main config file
