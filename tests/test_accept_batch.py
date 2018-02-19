@@ -54,7 +54,7 @@ def test_md5_dir(ran_accept_batch):
 def test_validation_dir(ran_accept_batch):
     """{temp_dir}/sub_root/topmed/phase3/biome/01/24a/validation"""
     validation_dir = ran_accept_batch.output_batch_dir / 'validation'
-    assert validation.isdir()
+    assert validation_dir.isdir()
 
 
 @mark.xfail()
