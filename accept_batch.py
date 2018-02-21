@@ -21,8 +21,10 @@ need to run in prod, since will call aspera
 #sub base will be defined in config now
 g_base = Path(sub_root)
 input_path= Path(sys.argv[1])
+info_path= Path(sys.argv[2])
 dest_path = Path(g_base, *input_path.parts[-5:])
-
+info_list=info_path.parts
+#info_walk=info_list[-5:0]
 input_path.glob('meta.{yaml,yml,txt}')
 meta_hits = list(input_path.glob('meta.*'))
 assert len(meta_hits) == 1,"There are too many meta hits"
@@ -71,6 +73,7 @@ def check_or_make(path):
     else:
         path.mkdir(parents=True)
 
+#Below function needed if not ran in prod
 def aspera_path(input_p):
     cmd="scp -r "+ "meta.yaml" +" "+ aspd_base+"/"+batch_name+"/"
     process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
@@ -81,6 +84,8 @@ def make_paths(input_path, dest_path):
     md5_path = Path(dest_path, 'md5')
     validation_path = Path(dest_path, 'validation')
     state_path = Path(dest_path, 'state')
+    info_path_set= Path(input_path, info_list[-5], info_list[-4], info_list[-3], info_list[-2], info_list[-1])
+    check_or_make(info_path_set)
     check_or_make(md5_path)
     check_or_make(validation_path)
     check_or_make(state_path)
@@ -108,5 +113,6 @@ else:
 print_tsv(meta.input)
 logging.info("PROJECT CODE: %s" % (project_code))
 logging.info("FILE NAME: %s" % (meta_path.name))
+
 
 
