@@ -19,15 +19,26 @@ need to run in prod, since will call aspera
 """
 #sub_base = Path('/stornext/snfs1/submissions/topmed')
 #sub base will be defined in config now
+current = Path().absolute()
 g_base = Path(sub_root)
+print (g_base)
 input_path= Path(sys.argv[1])
 dest_path = Path(g_base, *input_path.parts[-5:])
-
+print (dest_path)
+current_fixed= Path(current,*input_path.parts[-5:])
 input_path.glob('meta.{yaml,yml,txt}')
 meta_hits = list(input_path.glob('meta.*'))
 assert len(meta_hits) == 1,"There are too many meta hits"
 meta_path = meta_hits[0]
 meta_doc = yaml.load(meta_path.read_text())
+meta_name = meta_path.name
+tsv_hits = list(input_path.glob('*.tsv'))
+assert len(tsv_hits) == 1, "There are too many tsv hits"
+tsv_path = tsv_hits[0]
+tsv_name = tsv_path.name
+#above prints the path where tsv is in input
+
+
 #assert type(name) is StringType, "name is not a string: %r" % name
 
 logging.basicConfig(level=logging.INFO)
@@ -77,14 +88,21 @@ def aspera_path(input_p):
     output, error = process.communicate()
     print (cmd)
 
-def make_paths(input_path, dest_path):
+def make_paths(dest_path,current_fixed):
     md5_path = Path(dest_path, 'md5')
+    print (md5_path)
+    print ("above is md5_path")
     validation_path = Path(dest_path, 'validation')
     state_path = Path(dest_path, 'state')
     check_or_make(md5_path)
     check_or_make(validation_path)
     check_or_make(state_path)
+    check_or_make(current_fixed)
     write_yaml(state_path)
+    link_tsv = Path(current_fixed,tsv_name) 
+    link_tsv.symlink_to(tsv_name)
+    link_meta = Path(current_fixed,meta_name)
+    link_meta.symlink_to(meta_name)
     link_current_path = state_path / 'current.yaml'
     link_current_path.symlink_to('00.yaml')
     aspera_root = Path(asp_root,sub_proj,batch_name)
@@ -100,13 +118,14 @@ input_file = meta.input
 
 if is_cram(meta) == True:
     #logging.info("This is a cram")
-    make_paths(input_path, dest_path)
+    make_paths(dest_path,current_fixed)
 else:
     logging.error("!!Not a Cram!!!")
 
 
 print_tsv(meta.input)
 logging.info("PROJECT CODE: %s" % (project_code))
-logging.info("FILE NAME: %s" % (meta_path.name))
+#logging.info("FILE NAME: %s" % (tsv_name))
+
 
 
