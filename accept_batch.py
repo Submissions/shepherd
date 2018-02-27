@@ -28,7 +28,6 @@ meta_hits = list(input_path.glob('meta.*'))
 assert len(meta_hits) == 1,"There are too many meta hits"
 meta_path = meta_hits[0]
 meta_doc = yaml.load(meta_path.read_text())
-dest_path = Path(g_base, *input_path.parts[-5:])
 #assert type(name) is StringType, "name is not a string: %r" % name
 
 logging.basicConfig(level=logging.INFO)
@@ -37,10 +36,8 @@ class Generic:
 meta = Generic()
 meta.__dict__.update(meta_doc)
 
-def print_tsv(input_p):
-    spreadsheet_hits= list(input_p.glob('*.tsv'))
-    assert len(spreadsheet_hits) == 1, "There is no single unique TSV hit"
-    spreadsheet_path=spreadsheet_hits[0]
+def print_tsv(tsv_file_path_str):
+    spreadsheet_path=Path(tsv_file_path_str)
     sname = spreadsheet_path.name
     
     if input_file == sname:
@@ -57,24 +54,22 @@ def is_cram(meta):
 
 def write_yaml(path):
     "This bad boy writes yaml files"
-    meta_p = "meta.yaml"
+    meta_p = "00.yaml"
     file_create= path / meta_p
     with file_create.open("w", encoding ="utf-8") as f:
-        f.write("""state_id: 0 
-      steps_completed: 0 
-      state: 
-        \t copy: initial 
-        \t md5: initial 
-        \t validation: initial \n""")
+        print("""state_id: 0
+steps_completed: 0
+state:
+  copy: initial
+  md5: initial
+  validation: initial""", file=f)
         return
 
 def check_or_make(path):
     if path.exists():
         logging.warning("%s exist" % (path)) 
-        write_yaml(path)
     else:
         path.mkdir(parents=True)
-        write_yaml(path)
 
 def aspera_path(input_p):
     cmd="scp -r "+ "meta.yaml" +" "+ aspd_base+"/"+batch_name+"/"
@@ -82,15 +77,16 @@ def aspera_path(input_p):
     output, error = process.communicate()
     print (cmd)
 
-def make_paths(input_p):
-    md5_g = Path(input_p,"md5")
-    check_or_make(md5_g)
-    val_g = Path(input_p,"validation")
-    check_or_make(val_g)
-    md5_s = Path(sub_root,"md5-batches",batch_name)
-    val_s = Path(sub_root,"validation-batches",batch_name)
-    check_or_make(md5_s)
-    check_or_make(val_s)
+def make_paths(input_path, dest_path):
+    md5_path = Path(dest_path, 'md5')
+    validation_path = Path(dest_path, 'validation')
+    state_path = Path(dest_path, 'state')
+    check_or_make(md5_path)
+    check_or_make(validation_path)
+    check_or_make(state_path)
+    write_yaml(state_path)
+    link_current_path = state_path / 'current.yaml'
+    link_current_path.symlink_to('00.yaml')
     aspera_root = Path(asp_root,sub_proj,batch_name)
     check_or_make(aspera_root)
 
@@ -104,12 +100,12 @@ input_file = meta.input
 
 if is_cram(meta) == True:
     #logging.info("This is a cram")
-    make_paths(input_path)
+    make_paths(input_path, dest_path)
 else:
     logging.error("!!Not a Cram!!!")
 
 
-print_tsv(input_path)
+print_tsv(meta.input)
 logging.info("PROJECT CODE: %s" % (project_code))
 logging.info("FILE NAME: %s" % (meta_path.name))
 

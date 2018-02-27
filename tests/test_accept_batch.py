@@ -18,22 +18,68 @@ def test_fixture(accept_batch_fixture):
         print(k, config[k])
     assert 'asp_root' in config
     assert 'sub_root' in config
+    assert config['asp_root'] == accept_batch_fixture.asp_root
+    assert config['sub_root'] == accept_batch_fixture.sub_root
+    assert accept_batch_fixture.asp_root.isdir()
+    assert accept_batch_fixture.sub_root.isdir()
+    assert accept_batch_fixture.input_batch_dir.isdir()
+    assert (accept_batch_fixture.input_batch_dir / 'meta.yaml').isfile()
 
 
 def test_can_run_accept_batch(ran_accept_batch):
     pass
 
 
-@mark.xfail()
 def test_exit_0(ran_accept_batch):
     stdout.write(ran_accept_batch.stdout)
     stderr.write(ran_accept_batch.stderr)
     assert ran_accept_batch.returncode == 0
 
 
+def test_batch_dir(ran_accept_batch):
+    """{temp_dir}/sub_root/topmed/phase3/biome/01/24a"""
+    assert ran_accept_batch.output_batch_dir.isdir()
+
+
+def test_md5_dir(ran_accept_batch):
+    """{temp_dir}/sub_root/topmed/phase3/biome/01/24a/md5"""
+    md5_dir = ran_accept_batch.output_batch_dir / 'md5'
+    assert md5_dir.isdir()
+
+
+def test_validation_dir(ran_accept_batch):
+    """{temp_dir}/sub_root/topmed/phase3/biome/01/24a/validation"""
+    validation_dir = ran_accept_batch.output_batch_dir / 'validation'
+    assert validation_dir.isdir()
+
+
+def test_state_dir(ran_accept_batch):
+    """{temp_dir}/sub_root/topmed/phase3/biome/01/24a/state
+    contents: current.yaml -> 00.yaml"""
+    state_dir = ran_accept_batch.output_batch_dir / 'state'
+    print(repr(state_dir))
+    assert state_dir.isdir()
+    state_file = state_dir / '00.yaml'
+    print(repr(state_file))
+    assert state_file.isfile()
+    assert state_file.read_text('ascii') == ran_accept_batch.state_00_contents
+    current_link = state_dir / 'current.yaml'
+    print(repr(current_link))
+    assert current_link.islink()
+    assert current_link.realpath() == state_file
+
+
+def test_dest_dir(ran_accept_batch):
+    """{temp_dir}/asp_root/BioMe/BioMe_batch24a
+    contents: meta.yaml containing link to batch_dir"""
+    assert ran_accept_batch.dest_dir.isdir()
+
+
 @fixture(scope='module')
 def ran_accept_batch(accept_batch_fixture):
-    args = [executable, 'accept_batch.py', 'tests/resources/']
+    args = [executable,
+            'accept_batch.py',
+            'tests/resources/accept_batch/topmed/phase3/biome/01/24a/']
     cp = run(args, stdin=DEVNULL, stdout=PIPE, stderr=PIPE, encoding='ascii',
              env=dict(SHEPHERD_CONFIG_FILE=accept_batch_fixture.config_file))
     accept_batch_fixture.stdout = cp.stdout
@@ -49,14 +95,20 @@ def accept_batch_fixture(tmpdir_factory):
 
 class AcceptBatchFixture:
     def __init__(self, tmpdir_factory):
+        self.resources_path = local('tests/resources')
         self.root_dir = tmpdir_factory.mktemp('accept_batch')
-        self.asp_root = self.root_dir.ensure_dir('asp_root')
         self.sub_root = self.root_dir.ensure_dir('sub_root')
+        self.asp_root = self.root_dir.ensure_dir('asp_root')
+        self.input_batch_dir = (
+            self.resources_path / 'accept_batch/topmed/phase3/biome/01/24a'
+        )
+        self.output_batch_dir = self.sub_root / 'topmed/phase3/biome/01/24a'
+        self.dest_dir = self.asp_root / 'BioMe/BioMe_batch24a'
         # Main config file
         self.config_file = self.root_dir.join('config.yaml')
         config = dict(asp_root=str(self.asp_root), sub_root=str(self.sub_root))
         self.config_file.write_text(
             yaml.dump(config, default_flow_style=False), 'ascii')
-        meta_yaml_src = local('tests/resources/meta.yaml')
-        # meta_yaml_src.copy(meta_yaml_dst)
-        # Aspera path
+        # Expected contents state_00.yaml
+        state_00_yaml = local('tests/resources/state_00.yaml')
+        self.state_00_contents = state_00_yaml.read_text('ascii')
