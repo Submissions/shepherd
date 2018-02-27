@@ -6,7 +6,7 @@ import os
 import yaml
 
 
-DEFAULT_CONFIG_FILE = '~/.config/shepherd.yaml'
+DEFAULT_CONFIG_FILE = os.path.expanduser('~/.config/shepherd.yaml')
 SHEPHERD_CONFIG_FILE = 'SHEPHERD_CONFIG_FILE'
 REQUIRED_CONFIG_KEYS = 'asp_root sub_root'.split()
 
