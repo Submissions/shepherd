@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+import subprocess
 import sys
 import yaml
 from pathlib import Path
@@ -113,6 +114,14 @@ def check_or_make(path):
         sys.exit(1)
     else:
         path.mkdir(parents=True)
+
+
+def aspera_path(input_p):
+    # TODO: Check if being used anywhere by other app, otherwise delete.
+    cmd="scp -r "+ "meta.yaml" +" "+ aspd_base+"/"+batch_name+"/"
+    process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+    output, error = process.communicate()
+    print (cmd)
 
 
 def write_yaml(path):
