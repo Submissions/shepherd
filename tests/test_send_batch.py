@@ -17,7 +17,7 @@ def test_fixture(send_batch_fixture):
     for k in sorted(vars(send_batch_fixture)):
         print(k, getattr(send_batch_fixture, k))
     with open(send_batch_fixture.root_dir.join('config.yaml')) as fin:
-        config = yaml.load(fin)
+        config = yaml.safe_load(fin)
     print()
     for k in sorted(config):
         print(k, config[k])
@@ -62,7 +62,7 @@ def test_meta_yaml(ran_send_batch, yesterday_and_today):
     meta_path = ran_send_batch.batch_path/'meta.yaml'
     assert meta_path.isfile()
     with open(meta_path) as fin:
-        meta_dict = yaml.load(fin)
+        meta_dict = yaml.safe_load(fin)
     meta = Generic()
     meta.__dict__.update(meta_dict)
     assert meta.input == 'BioMe_batch24a_mplx.tsv'

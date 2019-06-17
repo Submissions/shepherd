@@ -41,7 +41,7 @@ for i in range(4, 0, -1):
     defaults_yaml_path = here.parents[i] / 'defaults.yaml'
     if defaults_yaml_path.is_file():
         with open(defaults_yaml_path) as f:
-            d = yaml.load(f)
+            d = yaml.safe_load(f)
         defaults.update(d)
 project_name = defaults['project_name']
 subproject_name = defaults['subproject_name']

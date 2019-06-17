@@ -26,7 +26,7 @@ def get_config(config_path=None):
 class Config:
     def __init__(self, config_yaml_path):
         with open(config_yaml_path) as fin:
-            config_data = yaml.load(fin)
+            config_data = yaml.safe_load(fin)
         missing = set(REQUIRED_CONFIG_KEYS) - set(config_data)
         if missing:
             raise ConfigError('Missing: {}'.format(sorted(missing)))
