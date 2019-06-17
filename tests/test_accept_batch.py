@@ -12,7 +12,7 @@ def test_fixture(accept_batch_fixture):
     for k in sorted(vars(accept_batch_fixture)):
         print(k, getattr(accept_batch_fixture, k))
     with open(accept_batch_fixture.root_dir.join('config.yaml')) as fin:
-        config = yaml.load(fin)
+        config = yaml.safe_load(fin)
     print()
     for k in sorted(config):
         print(k, config[k])
