@@ -60,6 +60,11 @@ def run(input_path):
         logger.exception("Missing key from meta file.")
         sys.exit(1)
 
+    # Check that there is no whitespace in input file name.
+    if ' ' in input_file:
+        logger.error("TSV input file name has spaces.")
+        sys.exit(1)
+
     # Check that the tsv file exist
     if not Path(input_path, input_file).exists():
         logger.error(f"TSV file {input_file} does not exist.")
