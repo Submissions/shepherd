@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+import shutil
 import subprocess
 import sys
 import yaml
@@ -59,6 +60,11 @@ def run(input_path):
         logger.exception("Missing key from meta file.")
         sys.exit(1)
 
+    # Check that there is no whitespace in input file name.
+    if ' ' in input_file:
+        logger.error("TSV input file name has spaces.")
+        sys.exit(1)
+
     # Check that the tsv file exist
     if not Path(input_path, input_file).exists():
         logger.error(f"TSV file {input_file} does not exist.")
@@ -67,6 +73,9 @@ def run(input_path):
     # Check thats the file is a CRAM
     if is_cram(meta["file_formats"]):
         make_paths(asp_root, batch_name, dest_path, sub_proj)
+
+    # Copy over TSV input file to destination path
+    shutil.copy(Path(input_path, input_file), dest_path)
 
     logger.info("PROJECT CODE: %s" % (project_code))
     logger.info("FILE NAME: %s" % (meta_path.name))
